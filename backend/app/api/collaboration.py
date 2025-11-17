@@ -1,11 +1,21 @@
 """
 Collaboration API endpoints - 协作功能API端点
+
+提供以下功能的API：
+1. 版本控制 - 创建/查看/对比/恢复版本
+2. 评论系统 - 创建/查看/更新/删除评论
+3. 通知管理 - 查看/标记/删除通知
+4. WebSocket实时协作 - 多人实时编辑和光标同步
 """
 from fastapi import APIRouter, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 from typing import List
 from uuid import UUID
 import json
+import logging
+
+# 配置日志
+logger = logging.getLogger(__name__)
 
 from ..database import get_db
 from ..dependencies import get_current_active_user, get_optional_current_user
@@ -465,24 +475,49 @@ async def delete_notification(
 async def websocket_endpoint(
     websocket: WebSocket,
     note_id: UUID,
-    user_id: UUID,
-    username: str
+    token: str,  # JWT token for authentication
+    db: Session = Depends(get_db)
 ):
     """
     WebSocket 实时协作端点
 
+    安全性：
+    - 需要通过JWT token进行身份验证
+    - 检查用户是否有笔记的访问权限（至少需要查看权限）
+    - 只有通过验证的用户才能建立WebSocket连接
+
     连接参数:
-    - note_id: 笔记ID
-    - user_id: 用户ID
-    - username: 用户名
+    - note_id: 笔记ID（路径参数）
+    - token: JWT认证令牌（查询参数）
 
     消息类型:
-    - cursor_update: 光标位置更新
-    - edit: 编辑操作
-    - user_joined: 用户加入
-    - user_left: 用户离开
+    - cursor_update: 光标位置更新 {'type': 'cursor_update', 'position': {'line': 10, 'column': 5}}
+    - edit: 编辑操作 {'type': 'edit', 'operation': {...}}
+    - user_joined: 用户加入（系统消息）
+    - user_left: 用户离开（系统消息）
     """
+    from ..dependencies import decode_token
+
+    # 验证JWT token
+    try:
+        payload = decode_token(token)
+        user_id = UUID(payload.get("sub"))
+        username = payload.get("username", "Unknown")
+    except Exception as e:
+        logger.error(f"WebSocket认证失败: {e}")
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
+    # 检查用户是否有权限访问此笔记
+    has_access = share_service.check_user_access(db, note_id, user_id, 'view')
+    if not has_access:
+        logger.warning(f"用户 {user_id} 无权限访问笔记 {note_id}")
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
+    # 建立连接
     await manager.connect(websocket, note_id, user_id, username)
+    logger.info(f"用户 {username}({user_id}) 连接到笔记 {note_id}")
 
     try:
         while True:
