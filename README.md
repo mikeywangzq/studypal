@@ -111,10 +111,11 @@
 | **大模型集成** | OpenAI GPT-3.5-turbo 提供智能回答 |
 | **🆕 智能分类** | LLM 自动分类笔记并提取技术标签 |
 | **🆕 查询缓存** | LRU/TTL 缓存策略提升响应速度 |
+| **🆕 JWT 认证** | 安全的用户认证和授权系统 |
+| **🆕 数据导出** | 支持 JSON/Markdown/CSV 多格式导出 |
 | **🆕 测试覆盖** | 完整的单元测试确保代码质量 |
 | **一键部署** | Docker Compose 一条命令启动全部服务 |
 | **现代化 UI** | Tailwind CSS 打造精美响应式界面 |
-| **实时更新** | React Query 自动缓存失效和数据同步 |
 
 </div>
 
@@ -543,6 +544,160 @@ PATCH /api/deadlines/{deadline_id}/complete
 ```http
 DELETE /api/deadlines/{deadline_id}
 ```
+
+</details>
+
+---
+
+### 🔐 用户认证 API（4 个端点）
+
+<details>
+<summary><b>🆕 ✍️ 用户注册</b></summary>
+
+```http
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "username": "your_username",
+  "email": "your_email@example.com",
+  "password": "your_password"
+}
+```
+
+**返回**:
+```json
+{
+  "user": {
+    "id": "uuid",
+    "username": "your_username",
+    "email": "your_email@example.com",
+    "is_active": true,
+    "created_at": "2024-01-01T00:00:00"
+  },
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "token_type": "bearer"
+}
+```
+
+</details>
+
+<details>
+<summary><b>🆕 🔑 用户登录</b></summary>
+
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "your_email@example.com",
+  "password": "your_password"
+}
+```
+
+**返回**: 用户信息和访问令牌
+
+</details>
+
+<details>
+<summary><b>🆕 👤 获取当前用户信息</b></summary>
+
+```http
+GET /api/auth/me
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。返回当前登录用户的信息。
+
+</details>
+
+<details>
+<summary><b>🆕 🔄 刷新令牌</b></summary>
+
+```http
+POST /api/auth/refresh
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。使用当前令牌获取新的访问令牌。
+
+</details>
+
+---
+
+### 📦 数据导出 API（6 个端点）
+
+<details>
+<summary><b>🆕 📄 导出笔记为 JSON</b></summary>
+
+```http
+GET /api/export/notes/json
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。导出当前用户的所有笔记为 JSON 文件。
+
+</details>
+
+<details>
+<summary><b>🆕 📝 导出笔记为 Markdown</b></summary>
+
+```http
+GET /api/export/notes/markdown
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。导出所有笔记为一个 Markdown 文件，按分类组织。
+
+</details>
+
+<details>
+<summary><b>🆕 💬 导出对话为 JSON</b></summary>
+
+```http
+GET /api/export/conversations/json
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。导出所有对话记录和消息。
+
+</details>
+
+<details>
+<summary><b>🆕 📅 导出 DDL 为 JSON</b></summary>
+
+```http
+GET /api/export/deadlines/json
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。导出所有截止日期数据。
+
+</details>
+
+<details>
+<summary><b>🆕 📊 导出 DDL 为 CSV</b></summary>
+
+```http
+GET /api/export/deadlines/csv
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。导出DDL为CSV格式，可在Excel中打开。
+
+</details>
+
+<details>
+<summary><b>🆕 🗂️ 导出所有数据</b></summary>
+
+```http
+GET /api/export/all/json
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。导出所有数据（笔记、对话、DDL）为一个JSON文件。
+
+**用途**: 数据备份、数据迁移、数据分析
 
 </details>
 
@@ -1288,17 +1443,25 @@ server {
 - [x] 单元测试和集成测试
 - [ ] 高级数据分析
 
+### ✅ 第六阶段：高级功能（已完成）
+- [x] JWT 用户认证系统
+- [x] 用户注册和登录
+- [x] 数据导出功能（JSON/Markdown/CSV）
+- [x] 访问令牌管理
+- [ ] 笔记协作分享
+- [ ] 移动端适配
+
 ### 🚀 未来展望
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-#### 🔐 用户系统
-- [ ] JWT 身份认证
-- [ ] 用户注册/登录
+#### 🔐 用户系统增强
 - [ ] 个人资料管理
-- [ ] 权限控制
+- [ ] 权限控制和角色管理
+- [ ] OAuth 第三方登录
+- [ ] 密码重置和邮箱验证
 
 #### 📱 移动端
 - [ ] React Native 移动应用
@@ -1332,12 +1495,12 @@ server {
 
 | 📈 指标 | 💯 数值 |
 |--------|---------|
-| **代码文件数** | 70+ |
-| **代码行数** | 7,500+ |
-| **API 端点** | 21 |
+| **代码文件数** | 76+ |
+| **代码行数** | 9,000+ |
+| **API 端点** | 31 |
 | **数据库表** | 5 |
 | **React 组件** | 15+ |
-| **开发阶段** | 5 个阶段 ✅ |
+| **开发阶段** | 6 个阶段 ✅ |
 | **测试文件** | 3 个测试套件 |
 | **测试用例** | 40+ 个测试 |
 

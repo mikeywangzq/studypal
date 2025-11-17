@@ -43,12 +43,10 @@ async def health_check():
 
 
 # Import and include routers
-from .api import notes, chat, deadlines
+from .api import notes, chat, deadlines, auth, export as export_router
 
+app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(notes.router, prefix="/api/notes", tags=["notes"])
 app.include_router(chat.router, prefix="/api/chat", tags=["chat"])
 app.include_router(deadlines.router, prefix="/api/deadlines", tags=["deadlines"])
-
-# TODO: Uncomment these as we create them
-# from .api import auth
-# app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+app.include_router(export_router.router, prefix="/api/export", tags=["export"])
