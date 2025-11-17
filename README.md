@@ -115,6 +115,9 @@
 | **🆕 OAuth 登录** | 支持 Google/GitHub 第三方登录 |
 | **🆕 个人资料管理** | 完整的用户资料和密码管理功能 |
 | **🆕 笔记分享协作** | 支持公开/私密分享、权限控制、链接访问 |
+| **🆕 实时协作编辑** | WebSocket 实时同步、多人光标显示 |
+| **🆕 版本控制系统** | 笔记历史记录、版本对比、一键回滚 |
+| **🆕 评论与讨论** | 支持嵌套回复、@提及、活动通知 |
 | **🆕 数据导出** | 支持 JSON/Markdown/CSV 多格式导出 |
 | **🆕 测试覆盖** | 完整的单元测试确保代码质量 |
 | **一键部署** | Docker Compose 一条命令启动全部服务 |
@@ -993,6 +996,280 @@ Authorization: Bearer <access_token>
 
 ---
 
+### 🔄 版本控制与协作 API（17 个端点）
+
+<details>
+<summary><b>🆕 📜 获取笔记版本历史</b></summary>
+
+```http
+GET /api/notes/{note_id}/versions?limit=50
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。返回笔记的所有历史版本。
+
+**返回**: 版本列表，包含版本号、变更者、变更说明、创建时间等
+
+</details>
+
+<details>
+<summary><b>🆕 💾 创建版本快照</b></summary>
+
+```http
+POST /api/notes/{note_id}/versions
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "change_description": "修改了部分内容" // 可选
+}
+```
+
+**需要认证**。手动创建当前笔记的版本快照。
+
+</details>
+
+<details>
+<summary><b>🆕 ⏮️ 恢复到指定版本</b></summary>
+
+```http
+POST /api/notes/{note_id}/restore/{version_id}
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。将笔记恢复到指定的历史版本。
+
+**注意**: 会自动创建恢复前的快照
+
+</details>
+
+<details>
+<summary><b>🆕 🔍 对比两个版本</b></summary>
+
+```http
+GET /api/versions/compare?version_id1={id1}&version_id2={id2}
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。对比两个版本的差异。
+
+**返回**: 包含两个版本的完整内容和差异字段列表
+
+</details>
+
+<details>
+<summary><b>🆕 💬 创建评论</b></summary>
+
+```http
+POST /api/notes/{note_id}/comments
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "content": "这是一条评论",
+  "parent_id": "uuid", // 可选，回复功能
+  "mentions": ["user_uuid1", "user_uuid2"] // 可选，提及用户
+}
+```
+
+**需要认证**。在笔记下创建评论。
+
+**功能**:
+- 支持回复评论（嵌套评论）
+- 支持 @提及 用户
+- 自动发送通知
+
+</details>
+
+<details>
+<summary><b>🆕 📝 获取笔记评论</b></summary>
+
+```http
+GET /api/notes/{note_id}/comments
+Authorization: Bearer <access_token> // 可选
+```
+
+**支持公开访问**。返回笔记的所有评论（包含回复）。
+
+</details>
+
+<details>
+<summary><b>🆕 ✏️ 更新评论</b></summary>
+
+```http
+PUT /api/comments/{comment_id}
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "content": "更新后的评论内容"
+}
+```
+
+**需要认证**。只有评论作者可以更新。
+
+</details>
+
+<details>
+<summary><b>🆕 🗑️ 删除评论</b></summary>
+
+```http
+DELETE /api/comments/{comment_id}
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。只有评论作者可以删除。会同时删除所有回复。
+
+</details>
+
+<details>
+<summary><b>🆕 🔔 获取通知列表</b></summary>
+
+```http
+GET /api/notifications?unread_only=false&limit=50
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。获取当前用户的通知。
+
+**通知类型**:
+- `share` - 笔记分享通知
+- `comment` - 新评论通知
+- `mention` - 被提及通知
+- `permission` - 权限变更通知
+
+</details>
+
+<details>
+<summary><b>🆕 ✅ 标记通知已读</b></summary>
+
+```http
+POST /api/notifications/{notification_id}/read
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。标记单条通知为已读。
+
+</details>
+
+<details>
+<summary><b>🆕 ✅ 全部标记已读</b></summary>
+
+```http
+POST /api/notifications/read-all
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。标记所有通知为已读。
+
+</details>
+
+<details>
+<summary><b>🆕 📊 获取通知统计</b></summary>
+
+```http
+GET /api/notifications/stats
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。返回通知统计信息。
+
+**返回示例**:
+```json
+{
+  "total": 25,
+  "unread": 3,
+  "by_type": {
+    "share": 5,
+    "comment": 15,
+    "mention": 3,
+    "permission": 2
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>🆕 🗑️ 删除通知</b></summary>
+
+```http
+DELETE /api/notifications/{notification_id}
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。删除单条通知。
+
+</details>
+
+<details>
+<summary><b>🆕 🌐 WebSocket 实时协作</b></summary>
+
+```javascript
+// WebSocket 连接
+const ws = new WebSocket(
+  `ws://localhost:8000/api/ws/notes/${noteId}?user_id=${userId}&username=${username}`
+);
+
+// 接收消息
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+
+  switch(data.type) {
+    case 'user_joined':
+      // 新用户加入
+      break;
+    case 'user_left':
+      // 用户离开
+      break;
+    case 'cursor_update':
+      // 光标位置更新
+      break;
+    case 'edit':
+      // 编辑操作
+      break;
+  }
+};
+
+// 发送光标位置
+ws.send(JSON.stringify({
+  type: 'cursor_update',
+  position: { line: 10, column: 5 }
+}));
+
+// 发送编辑操作
+ws.send(JSON.stringify({
+  type: 'edit',
+  operation: {
+    type: 'insert',
+    position: { line: 10, column: 5 },
+    content: 'Hello'
+  }
+}));
+```
+
+**实时功能**:
+- 多人光标显示
+- 实时编辑同步
+- 用户加入/离开提示
+- 在线用户列表
+
+</details>
+
+<details>
+<summary><b>🆕 👥 获取在线用户</b></summary>
+
+```http
+GET /api/notes/{note_id}/online-users
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。获取当前正在编辑笔记的在线用户列表。
+
+</details>
+
+---
+
 **📖 完整交互式 API 文档**: http://localhost:8000/docs
 
 ---
@@ -1759,6 +2036,19 @@ server {
 - [x] 分享给我的笔记列表
 - [x] 分享访问统计
 
+### ✅ 第九阶段：实时协作与版本控制（已完成）
+- [x] WebSocket 实时协作编辑
+- [x] 多人光标位置同步
+- [x] 实时编辑操作广播
+- [x] 笔记版本历史系统（快照机制）
+- [x] 版本对比功能
+- [x] 版本回滚功能
+- [x] 评论和讨论系统（支持嵌套回复）
+- [x] @提及用户功能
+- [x] 活动通知系统（分享、评论、提及、权限变更）
+- [x] 通知已读/未读管理
+- [x] 在线用户列表显示
+
 ### 🚀 未来展望
 
 <table>
@@ -1766,10 +2056,11 @@ server {
 <td width="50%" valign="top">
 
 #### 🤝 协作功能增强
-- [ ] 实时协作编辑（WebSocket）
-- [ ] 笔记变更历史和版本控制
-- [ ] 评论和讨论功能
+- [x] 实时协作编辑（WebSocket）✅
+- [x] 笔记变更历史和版本控制 ✅
+- [x] 评论和讨论功能 ✅
 - [ ] 团队工作空间
+- [ ] 协作白板功能
 
 #### 📱 移动端
 - [ ] React Native 移动应用
@@ -1785,7 +2076,7 @@ server {
 - [ ] 邮件提醒
 - [ ] 知识图谱可视化
 - [ ] 学习进度分析
-- [ ] 笔记分享与协作
+- [ ] AI 学习路径推荐
 
 #### 🌍 国际化
 - [ ] 多语言支持
@@ -1803,12 +2094,12 @@ server {
 
 | 📈 指标 | 💯 数值 |
 |--------|---------|
-| **代码文件数** | 83+ |
-| **代码行数** | 11,500+ |
-| **API 端点** | 48 |
-| **数据库表** | 7 |
+| **代码文件数** | 90+ |
+| **代码行数** | 13,500+ |
+| **API 端点** | 65 |
+| **数据库表** | 10 |
 | **React 组件** | 15+ |
-| **开发阶段** | 8 个阶段 ✅ |
+| **开发阶段** | 9 个阶段 ✅ |
 | **测试文件** | 3 个测试套件 |
 | **测试用例** | 40+ 个测试 |
 
