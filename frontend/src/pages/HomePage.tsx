@@ -1,4 +1,5 @@
 import { BookOpen, MessageSquare, Calendar } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 function HomePage() {
   return (
@@ -59,9 +60,9 @@ function HomePage() {
               Ask questions and get intelligent answers based on your personal knowledge base.
               Context-aware and always learning from your notes.
             </p>
-            <button className="text-green-600 hover:text-green-800 font-medium">
+            <Link to="/chat" className="text-green-600 hover:text-green-800 font-medium inline-block">
               Start Chatting →
-            </button>
+            </Link>
           </div>
 
           {/* Deadlines Feature */}
