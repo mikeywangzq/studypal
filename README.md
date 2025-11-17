@@ -1,128 +1,199 @@
-# StudyPal - AI Personal Learning Assistant
+# StudyPal - AI 智能学习助手
 
-> An intelligent, all-in-one learning companion designed specifically for Computer Science students to **manage course notes**, **get AI-powered answers**, and **track assignment deadlines**.
+> 🎓 专为计算机系学生打造的智能学习伙伴，让学习更高效、更智能！
+>
+> **笔记管理** · **AI 问答** · **DDL 追踪** · 三位一体的学习解决方案
+
+<div align="center">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![React](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-009688.svg)](https://fastapi.tiangolo.com/)
 
----
-
-## 📚 Table of Contents
-
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Quick Start](#-quick-start)
-- [Complete API Documentation](#-complete-api-documentation)
-- [Usage Guide](#-usage-guide)
-- [Architecture](#-architecture)
-- [Database Schema](#-database-schema)
-- [Configuration](#-configuration)
-- [Testing](#-testing)
-- [Deployment](#-deployment)
-- [Roadmap](#-roadmap)
+</div>
 
 ---
 
-## ✨ Features
+## 📖 目录
 
-### 🎯 Three Core Modules (All Completed!)
-
-#### 📚 **1. Smart Note Management**
-- **Upload & Organize**: Support for `.md`, `.txt`, `.py`, `.cpp`, `.java`, `.js`, `.ts`, and more
-- **Automatic Indexing**: Files are automatically chunked and vectorized for semantic search
-- **Vector Search**: Find relevant notes using natural language queries
-- **Metadata Management**: Categories and tags for easy organization
-- **Full CRUD**: Create, read, update, and delete notes
-
-#### 🤖 **2. AI Q&A Assistant (RAG)**
-- **Intelligent Answers**: Ask questions and get answers based on YOUR notes
-- **Source Attribution**: Every answer shows which notes it came from
-- **Multi-turn Conversations**: Context-aware dialogue with conversation history
-- **Markdown Rendering**: Beautiful formatting with code syntax highlighting
-- **Relevance Scoring**: See how confident the AI is about each source
-
-#### 📅 **3. Deadline Tracker**
-- **DDL Management**: Track assignments, exams, and project deadlines
-- **Priority Levels**: Mark tasks as low/medium/high priority
-- **Smart Views**: Filter by upcoming (7 days), overdue, or completed
-- **Visual Dashboard**: 5 statistics cards showing key metrics
-- **Time Indicators**: Smart time display (e.g., "还剩 2天", "逾期 3天")
-- **One-click Complete**: Mark tasks done with a single click
-
-### 🔥 Technical Highlights
-
-- ⚡ **RAG (Retrieval-Augmented Generation)**: Combines vector search + GPT for accurate answers
-- 🗄️ **Vector Database**: ChromaDB for efficient semantic similarity search
-- 🧠 **LLM Integration**: OpenAI GPT-3.5-turbo for intelligent responses
-- 🐳 **Docker Support**: One-command deployment with `docker-compose up`
-- 🎨 **Modern UI**: Beautiful, responsive interface built with Tailwind CSS
-- 📊 **Real-time Updates**: React Query for automatic cache invalidation
-- 🔍 **Full-text Search**: Combine vector and keyword search for best results
+- [✨ 核心功能](#-核心功能)
+- [🛠️ 技术栈](#️-技术栈)
+- [🚀 快速开始](#-快速开始)
+- [📚 API 文档](#-api-文档)
+- [💡 使用指南](#-使用指南)
+- [🏗️ 系统架构](#️-系统架构)
+- [🗄️ 数据库设计](#️-数据库设计)
+- [⚙️ 配置说明](#️-配置说明)
+- [🧪 测试指南](#-测试指南)
+- [🚢 部署方案](#-部署方案)
+- [🗺️ 发展路线](#️-发展路线)
 
 ---
 
-## 🛠️ Tech Stack
+## ✨ 核心功能
 
-### Backend
-- **Framework**: FastAPI (Python 3.11+)
-- **Database**: PostgreSQL 14+
-- **Vector Store**: ChromaDB
-- **AI/ML**: LangChain + OpenAI (GPT-3.5-turbo, text-embedding-3-small)
-- **ORM**: SQLAlchemy 2.0
-- **Validation**: Pydantic 2.5+
+### 🎯 三大核心模块（已全部实现！）
 
-### Frontend
-- **Framework**: React 18 + TypeScript
-- **Build Tool**: Vite 5
-- **Styling**: Tailwind CSS 3.4
-- **State Management**: React Query (TanStack Query)
-- **Routing**: React Router v6
-- **UI Components**: Lucide Icons
-- **Markdown**: react-markdown + react-syntax-highlighter
+<table>
+<tr>
+<td width="33%" valign="top">
 
-### DevOps
-- **Containerization**: Docker + Docker Compose
-- **Database**: PostgreSQL with persistent volumes
-- **File Storage**: Local filesystem (expandable to S3)
+#### 📚 智能笔记管理
+- ✅ **多格式支持**
+  `.md` `.txt` `.py` `.cpp` `.java` `.js` `.ts` 等
+
+- ✅ **自动索引**
+  上传即自动分块和向量化
+
+- ✅ **语义搜索**
+  使用自然语言查找相关笔记
+
+- ✅ **标签分类**
+  支持多维度分类和标签管理
+
+- ✅ **完整 CRUD**
+  增删改查一应俱全
+
+</td>
+<td width="33%" valign="top">
+
+#### 🤖 AI 智能问答
+- ✅ **基于笔记回答**
+  AI 只用你的笔记回答问题
+
+- ✅ **来源追溯**
+  每个回答都显示引用来源
+
+- ✅ **多轮对话**
+  支持上下文理解的连续对话
+
+- ✅ **Markdown 渲染**
+  代码高亮、公式显示
+
+- ✅ **相关度评分**
+  显示每个来源的可信度
+
+</td>
+<td width="33%" valign="top">
+
+#### 📅 DDL 截止日期管理
+- ✅ **作业追踪**
+  作业、考试、项目一网打尽
+
+- ✅ **优先级管理**
+  高/中/低三档优先级
+
+- ✅ **智能视图**
+  即将到期、已逾期、已完成
+
+- ✅ **统计面板**
+  5 个统计卡片一目了然
+
+- ✅ **时间提示**
+  "还剩 2天" "逾期 3天"
+
+</td>
+</tr>
+</table>
+
+### 🔥 技术亮点
+
+<div align="center">
+
+| 🚀 特性 | 📝 说明 |
+|--------|---------|
+| **RAG 检索增强** | 向量搜索 + GPT 大模型，答案准确度高 |
+| **向量数据库** | ChromaDB 实现高效语义相似度搜索 |
+| **大模型集成** | OpenAI GPT-3.5-turbo 提供智能回答 |
+| **一键部署** | Docker Compose 一条命令启动全部服务 |
+| **现代化 UI** | Tailwind CSS 打造精美响应式界面 |
+| **实时更新** | React Query 自动缓存失效和数据同步 |
+| **全文检索** | 向量搜索 + 关键词搜索双重保障 |
+
+</div>
 
 ---
 
-## 🚀 Quick Start
+## 🛠️ 技术栈
 
-### Prerequisites
-- **Docker** & **Docker Compose** installed
-- **OpenAI API Key** (get one at https://platform.openai.com/)
+<table>
+<tr>
+<td width="50%" valign="top">
 
-### 1. Clone the Repository
+### 后端技术
+```yaml
+框架:        FastAPI (Python 3.11+)
+数据库:      PostgreSQL 14+
+向量库:      ChromaDB
+AI/ML:       LangChain + OpenAI
+  模型:      GPT-3.5-turbo
+  嵌入:      text-embedding-3-small
+ORM:         SQLAlchemy 2.0
+验证:        Pydantic 2.5+
+```
+
+</td>
+<td width="50%" valign="top">
+
+### 前端技术
+```yaml
+框架:        React 18 + TypeScript
+构建工具:    Vite 5
+样式:        Tailwind CSS 3.4
+状态管理:    React Query (TanStack)
+路由:        React Router v6
+UI 组件:     Lucide Icons
+Markdown:    react-markdown + syntax-highlighter
+```
+
+</td>
+</tr>
+</table>
+
+### DevOps 工具
+```yaml
+容器化:      Docker + Docker Compose
+数据库:      PostgreSQL (持久化卷)
+文件存储:    本地文件系统 (可扩展至 S3)
+```
+
+---
+
+## 🚀 快速开始
+
+### 📋 前置要求
+- ✅ **Docker** & **Docker Compose** 已安装
+- ✅ **OpenAI API Key** ([获取链接](https://platform.openai.com/))
+
+### 1️⃣ 克隆仓库
 ```bash
 git clone https://github.com/your-username/studypal.git
 cd studypal
 ```
 
-### 2. Configure Environment Variables
+### 2️⃣ 配置环境变量
 ```bash
-# Edit backend/.env
+# 编辑 backend/.env 文件
 OPENAI_API_KEY=sk-your-openai-api-key-here
 ```
 
-### 3. Start All Services
+### 3️⃣ 启动所有服务
 ```bash
 docker-compose up --build
 ```
 
-Wait for all services to start (about 2-3 minutes on first run):
-- ✅ **PostgreSQL**: localhost:5432
-- ✅ **Backend API**: http://localhost:8000
-- ✅ **Frontend**: http://localhost:3000
+⏳ 等待所有服务启动（首次运行约 2-3 分钟）：
+- ✅ **PostgreSQL** → localhost:5432
+- ✅ **后端 API** → http://localhost:8000
+- ✅ **前端界面** → http://localhost:3000
 
-### 4. Access the Application
-- **Frontend UI**: http://localhost:3000
-- **API Documentation**: http://localhost:8000/docs (Swagger UI)
-- **Health Check**: http://localhost:8000/health
+### 4️⃣ 访问应用
+- 🎨 **前端界面**: http://localhost:3000
+- 📖 **API 文档**: http://localhost:8000/docs (Swagger UI)
+- ❤️ **健康检查**: http://localhost:8000/health
 
-### 5. Upload Sample Notes
+### 5️⃣ 上传测试笔记
 ```bash
 cd test_notes
 curl -X POST http://localhost:8000/api/notes/upload \
@@ -131,19 +202,21 @@ curl -X POST http://localhost:8000/api/notes/upload \
   -F "files=@database_index.md"
 ```
 
-### 6. Start Asking Questions!
-Visit http://localhost:3000/chat and ask:
-- "xv6的页表是怎么工作的？"
-- "TCP三次握手的过程是什么？"
-- "B+Tree索引有什么特点？"
+### 6️⃣ 开始提问！
+访问 http://localhost:3000/chat 试试这些问题：
+- 💬 "xv6 的页表是怎么工作的？"
+- 💬 "TCP 三次握手的过程是什么？"
+- 💬 "B+Tree 索引有什么特点？"
 
 ---
 
-## 📖 Complete API Documentation
+## 📚 API 文档
 
-### 📚 Notes API (6 endpoints)
+### 📝 笔记管理 API（6 个端点）
 
-#### Upload Notes
+<details>
+<summary><b>📤 上传笔记</b></summary>
+
 ```http
 POST /api/notes/upload
 Content-Type: multipart/form-data
@@ -151,53 +224,98 @@ Content-Type: multipart/form-data
 files: file1.md, file2.py, file3.cpp...
 ```
 
-#### List Notes
+**支持格式**: `.md` `.txt` `.py` `.cpp` `.c` `.java` `.js` `.ts` `.jsx` `.tsx`
+**大小限制**: 单文件 10MB，总计 100MB
+
+</details>
+
+<details>
+<summary><b>📋 获取笔记列表</b></summary>
+
 ```http
 GET /api/notes?category=操作系统&tags=xv6,RISC-V&page=1&limit=20
 ```
 
-#### Get Specific Note
+**查询参数**:
+- `category` (可选): 分类筛选
+- `tags` (可选): 标签筛选（逗号分隔）
+- `page` (可选): 页码，默认 1
+- `limit` (可选): 每页数量，默认 20
+
+</details>
+
+<details>
+<summary><b>🔍 语义搜索</b></summary>
+
+```http
+GET /api/notes/search?query=页表是如何工作的&k=5
+```
+
+**查询参数**:
+- `query` (必填): 搜索关键词或问题
+- `k` (可选): 返回结果数量，默认 5
+
+**返回**: 按相关度排序的笔记块
+
+</details>
+
+<details>
+<summary><b>📖 获取单个笔记</b></summary>
+
 ```http
 GET /api/notes/{note_id}
 ```
 
-#### Update Note
+</details>
+
+<details>
+<summary><b>✏️ 更新笔记</b></summary>
+
 ```http
 PUT /api/notes/{note_id}
 Content-Type: application/json
 
 {
-  "title": "Updated Title",
+  "title": "更新后的标题",
   "category": "数据库",
   "tags": ["SQL", "索引", "B+Tree"]
 }
 ```
 
-#### Delete Note
+</details>
+
+<details>
+<summary><b>🗑️ 删除笔记</b></summary>
+
 ```http
 DELETE /api/notes/{note_id}
 ```
 
-#### Semantic Search
-```http
-GET /api/notes/search?query=页表是如何工作的&k=5
-```
+**注意**: 会同时删除所有相关的笔记块和向量
 
-### 💬 Chat API (5 endpoints)
+</details>
 
-#### Ask Question
+---
+
+### 💬 AI 问答 API（5 个端点）
+
+<details>
+<summary><b>🤖 提问</b></summary>
+
 ```http
 POST /api/chat/ask
 Content-Type: application/json
 
 {
-  "question": "xv6的页表是怎么工作的？",
-  "conversation_id": "optional-uuid"
+  "question": "xv6 的页表是怎么工作的？",
+  "conversation_id": "可选的会话 ID"
 }
+```
 
-Response:
+**响应示例**:
+```json
 {
-  "answer": "xv6 使用 RISC-V 的三级页表...",
+  "answer": "xv6 使用 RISC-V 的三级页表机制...",
   "sources": [
     {
       "note_id": "uuid",
@@ -206,33 +324,61 @@ Response:
       "relevance_score": 0.15
     }
   ],
-  "conversation_id": "uuid"
+  "conversation_id": "会话 ID"
 }
 ```
 
-#### List Conversations
+</details>
+
+<details>
+<summary><b>📜 获取会话列表</b></summary>
+
 ```http
 GET /api/chat/conversations?page=1&limit=20
 ```
 
-#### Get Conversation with Messages
+**返回**: 所有会话列表（按更新时间排序）
+
+</details>
+
+<details>
+<summary><b>💭 获取会话详情</b></summary>
+
 ```http
 GET /api/chat/conversations/{conversation_id}
 ```
 
-#### Update Conversation Title
+**返回**: 会话信息 + 所有消息记录
+
+</details>
+
+<details>
+<summary><b>✏️ 更新会话标题</b></summary>
+
 ```http
-PUT /api/chat/conversations/{conversation_id}/title?title=New Title
+PUT /api/chat/conversations/{conversation_id}/title?title=新标题
 ```
 
-#### Delete Conversation
+</details>
+
+<details>
+<summary><b>🗑️ 删除会话</b></summary>
+
 ```http
 DELETE /api/chat/conversations/{conversation_id}
 ```
 
-### 📅 Deadlines API (9 endpoints)
+**注意**: 会同时删除所有相关消息
 
-#### Create Deadline
+</details>
+
+---
+
+### 📅 DDL 管理 API（9 个端点）
+
+<details>
+<summary><b>➕ 创建 DDL</b></summary>
+
 ```http
 POST /api/deadlines
 Content-Type: application/json
@@ -242,30 +388,63 @@ Content-Type: application/json
   "course": "数据库系统",
   "due_date": "2024-12-25T23:59:00",
   "priority": "high",
-  "description": "完成ER图设计和SQL实现"
+  "description": "完成 ER 图设计和 SQL 实现"
 }
 ```
 
-#### List Deadlines
+**优先级**: `low` | `medium` | `high`
+**状态**: `pending` | `completed`
+
+</details>
+
+<details>
+<summary><b>📋 获取 DDL 列表</b></summary>
+
 ```http
-GET /api/deadlines?status=pending&priority=high&from_date=2024-12-01
+GET /api/deadlines?status=pending&priority=high&course=数据库系统
 ```
 
-#### Get Upcoming Deadlines
+**查询参数**:
+- `status`: 状态筛选
+- `priority`: 优先级筛选
+- `course`: 课程筛选
+- `from_date`, `to_date`: 时间范围筛选
+
+</details>
+
+<details>
+<summary><b>⏰ 即将到期的 DDL</b></summary>
+
 ```http
 GET /api/deadlines/upcoming?days=7
 ```
 
-#### Get Overdue Deadlines
+**参数**: `days` - 未来天数，默认 7
+
+**返回**: 未来 N 天内到期的待完成任务
+
+</details>
+
+<details>
+<summary><b>🚨 已逾期的 DDL</b></summary>
+
 ```http
 GET /api/deadlines/overdue
 ```
 
-#### Get Statistics
+**返回**: 所有已逾期但未完成的任务
+
+</details>
+
+<details>
+<summary><b>📊 统计数据</b></summary>
+
 ```http
 GET /api/deadlines/statistics
+```
 
-Response:
+**响应示例**:
+```json
 {
   "total": 15,
   "pending": 8,
@@ -275,595 +454,941 @@ Response:
 }
 ```
 
-#### Get Specific Deadline
+</details>
+
+<details>
+<summary><b>📖 获取单个 DDL</b></summary>
+
 ```http
 GET /api/deadlines/{deadline_id}
 ```
 
-#### Update Deadline
+</details>
+
+<details>
+<summary><b>✏️ 更新 DDL</b></summary>
+
 ```http
 PUT /api/deadlines/{deadline_id}
 Content-Type: application/json
 
 {
-  "title": "Updated Title",
-  "priority": "medium"
+  "title": "更新后的标题",
+  "priority": "medium",
+  "due_date": "2024-12-26T23:59:00"
 }
 ```
 
-#### Mark as Complete
+</details>
+
+<details>
+<summary><b>✅ 标记为完成</b></summary>
+
 ```http
 PATCH /api/deadlines/{deadline_id}/complete
 ```
 
-#### Delete Deadline
+**效果**: 将状态改为 `completed`，记录完成时间
+
+</details>
+
+<details>
+<summary><b>🗑️ 删除 DDL</b></summary>
+
 ```http
 DELETE /api/deadlines/{deadline_id}
 ```
 
-**📘 Full Interactive API Docs**: http://localhost:8000/docs (Swagger UI)
+</details>
 
 ---
 
-## 📖 Usage Guide
+**📖 完整交互式 API 文档**: http://localhost:8000/docs
 
-### Module 1️⃣: Note Management
+---
 
-#### Upload Your First Note
+## 💡 使用指南
 
-1. **Visit** http://localhost:3000 and click "Manage Notes"
-2. **Drag & drop** or click to select files:
-   - Supported: `.md`, `.txt`, `.py`, `.cpp`, `.c`, `.java`, `.js`, `.ts`
-   - Max size: 10MB per file, 100MB total
-3. **Wait** for processing (chunking + embedding generation)
-4. **Success!** Your notes are now searchable
+### 📚 模块一：笔记管理
 
-#### Search Your Notes
+#### 📤 上传你的第一个笔记
 
-**Semantic Search** (understanding meaning):
+1. **访问** http://localhost:3000 点击 "管理笔记"
+2. **拖放** 或点击选择文件：
+   - ✅ 支持格式: `.md` `.txt` `.py` `.cpp` `.c` `.java` `.js` `.ts`
+   - 📏 大小限制: 单文件 10MB，总计 100MB
+3. **等待** 处理（分块 + 向量化）
+4. **完成！** 笔记已可搜索
+
+#### 🔍 搜索你的笔记
+
+**语义搜索**（理解含义）:
 ```
-Query: "如何实现页表转换"
-→ Finds notes about page tables, address translation, walk()
+查询: "如何实现页表转换"
+→ 找到关于页表、地址转换、walk() 的笔记
 ```
 
-**Keyword Search** (exact matches):
+**关键词搜索**（精确匹配）:
 ```
-Query: "PTE_V"
-→ Finds exact occurrences of this flag
+查询: "PTE_V"
+→ 找到该标志的精确出现位置
 ```
 
 ---
 
-### Module 2️⃣: AI Q&A Assistant
+### 🤖 模块二：AI 问答助手
 
-#### Start a Conversation
+#### 💬 开始对话
 
-1. **Navigate** to http://localhost:3000/chat
-2. **Ask** your question in Chinese or English:
+1. **访问** http://localhost:3000/chat
+2. **提问**（支持中英文）:
    ```
-   "xv6的页表是怎么工作的？"
+   "xv6 的页表是怎么工作的？"
    "Explain TCP three-way handshake"
-   "B+Tree和B-Tree的区别是什么？"
+   "B+Tree 和 B-Tree 的区别是什么？"
    ```
-3. **View** the AI's answer with source references
-4. **Click** on sources to see which notes were used
+3. **查看** AI 的回答和引用来源
+4. **点击** 来源查看具体笔记内容
 
-#### Example Questions
+#### 📝 问题示例
 
-**Operating Systems:**
-- "xv6的walk()函数如何遍历页表？"
-- "RISC-V使用几级页表？每级多少条目？"
-- "TLB是什么？为什么需要它？"
+<table>
+<tr>
+<td width="33%" valign="top">
 
-**Computer Networks:**
-- "为什么需要三次握手而不是两次？"
-- "TIME_WAIT状态的作用是什么？"
-- "SYN洪水攻击如何防御？"
+**操作系统**
+- xv6 的 walk() 函数如何遍历页表？
+- RISC-V 使用几级页表？
+- TLB 是什么？为什么需要它？
+- 进程切换时页表如何更新？
 
-**Databases:**
-- "聚簇索引和非聚簇索引的区别"
-- "什么情况下索引会失效？"
-- "如何选择合适的索引前缀长度？"
+</td>
+<td width="33%" valign="top">
 
-**Cross-domain:**
+**计算机网络**
+- 为什么需要三次握手而不是两次？
+- TIME_WAIT 状态的作用是什么？
+- SYN 洪水攻击如何防御？
+- TCP 如何保证可靠传输？
+
+</td>
+<td width="33%" valign="top">
+
+**数据库**
+- 聚簇索引和非聚簇索引的区别
+- 什么情况下索引会失效？
+- 如何选择合适的索引前缀长度？
+- B+Tree 为什么适合做索引？
+
+</td>
+</tr>
+</table>
+
+**跨领域问题**:
 - "我有哪些关于操作系统的笔记？"
 - "总结一下我学习的所有内容"
+- "数据库和操作系统有什么共同点？"
 
-#### Tips for Better Answers
+#### 💡 获得更好答案的技巧
 
-✅ **Good**: Specific questions with context
-- "xv6中walk()函数的参数alloc的作用是什么？"
+| ✅ 好的提问 | ❌ 不好的提问 |
+|-----------|------------|
+| "xv6 中 walk() 函数的参数 alloc 的作用是什么？" | "页表怎么用？" |
+| "TCP 为什么需要 TIME_WAIT 状态？" | "TCP 是什么？" |
+| "B+Tree 的叶子节点有什么特点？" | "索引怎么建？" |
 
-❌ **Poor**: Vague questions
-- "页表怎么用？"
-
----
-
-### Module 3️⃣: Deadline Tracker
-
-#### Add Your First DDL
-
-1. **Navigate** to http://localhost:3000/deadlines
-2. **Click** "添加 DDL" button
-3. **Fill** the form:
-   - **Title**: "数据库大作业" (required)
-   - **Course**: "数据库系统" (optional)
-   - **Due Date**: Select date & time (required)
-   - **Priority**: High/Medium/Low
-   - **Description**: Task details (optional)
-4. **Submit** and see it in the list!
-
-#### Manage Your DDLs
-
-**View Modes:**
-- **全部待办**: All pending tasks
-- **即将到期**: Due within 7 days
-- **已逾期**: Overdue tasks (red background!)
-- **已完成**: Completed tasks
-
-**Quick Actions:**
-- ✅ **Complete**: Click checkbox
-- 🗑️ **Delete**: Click trash icon (with confirmation)
-- 📊 **Statistics**: View dashboard at top
-
-**Visual Indicators:**
-- 🔴 **High Priority**: Red badge
-- 🟡 **Medium Priority**: Yellow badge
-- 🟢 **Low Priority**: Green badge
-- ⏰ **Time Display**:
-  - "还剩 2小时" → Orange (urgent!)
-  - "还剩 3天" → Yellow (soon)
-  - "逾期 2天" → Red (overdue!)
+**提示**: 越具体的问题，AI 的回答越准确！
 
 ---
 
-## 🏗️ Architecture
+### 📅 模块三：DDL 管理
 
-### System Architecture
+#### ➕ 添加你的第一个 DDL
+
+1. **访问** http://localhost:3000/deadlines
+2. **点击** "添加 DDL" 按钮
+3. **填写** 表单：
+   - **标题** *（必填）: "数据库大作业"
+   - **课程** （可选）: "数据库系统"
+   - **截止时间** *（必填）: 选择日期和时间
+   - **优先级**: 高 / 中 / 低
+   - **描述** （可选）: 任务详情
+4. **提交** 即可在列表中看到！
+
+#### 📊 管理你的 DDL
+
+**视图模式**:
+- 🔵 **全部待办** - 所有未完成的任务
+- 🟠 **即将到期** - 7 天内到期的任务
+- 🔴 **已逾期** - 已过期但未完成（红色背景提醒）
+- 🟢 **已完成** - 已完成的任务
+
+**快捷操作**:
+- ✅ **完成** - 点击复选框
+- 🗑️ **删除** - 点击垃圾桶图标（需确认）
+- 📊 **统计** - 查看顶部统计面板
+
+**可视化指示**:
+- 🔴 **高优先级** - 红色徽章
+- 🟡 **中优先级** - 黄色徽章
+- 🟢 **低优先级** - 绿色徽章
+
+**时间显示**:
+- 🟠 "还剩 2小时" → 橙色（紧急！）
+- 🟡 "还剩 3天" → 黄色（即将到期）
+- 🔴 "逾期 2天" → 红色（已逾期！）
+- 🟢 "已完成" → 绿色
+
+---
+
+## 🏗️ 系统架构
+
+### 整体架构图
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                      StudyPal System                         │
-└─────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────┐
+│                     StudyPal AI 学习助手系统                        │
+└───────────────────────────────────────────────────────────────────┘
 
-┌──────────────┐                  ┌──────────────┐
-│   Frontend   │ ←── HTTP/JSON ──→│   Backend    │
-│  React + TS  │                  │   FastAPI    │
-└──────────────┘                  └──────┬───────┘
-                                         │
-                    ┌────────────────────┼────────────────────┐
-                    │                    │                    │
-            ┌───────▼────────┐  ┌────────▼───────┐  ┌────────▼────────┐
-            │  PostgreSQL    │  │    ChromaDB    │  │  OpenAI API     │
-            │  (Metadata)    │  │   (Vectors)    │  │  (LLM + Embed)  │
-            └────────────────┘  └────────────────┘  └─────────────────┘
+┌─────────────────┐                        ┌─────────────────┐
+│   前端 Frontend │ ◀──── HTTP/JSON ────▶  │  后端 Backend   │
+│                 │                        │                 │
+│  React 18       │                        │  FastAPI        │
+│  TypeScript     │                        │  Python 3.11+   │
+│  Tailwind CSS   │                        │                 │
+└─────────────────┘                        └────────┬────────┘
+                                                    │
+                           ┌────────────────────────┼────────────────────────┐
+                           │                        │                        │
+                   ┌───────▼────────┐      ┌────────▼────────┐     ┌────────▼─────────┐
+                   │  PostgreSQL    │      │   ChromaDB      │     │   OpenAI API     │
+                   │                │      │                 │     │                  │
+                   │  关系型数据     │      │   向量数据库     │     │  GPT-3.5-turbo   │
+                   │  笔记元数据     │      │   语义搜索       │     │  text-embed-3    │
+                   │  会话/DDL      │      │                 │     │                  │
+                   └────────────────┘      └─────────────────┘     └──────────────────┘
 ```
 
-### RAG Pipeline
+### RAG 检索增强生成流程
 
 ```
-📝 User Question
+📝 用户提问
     ↓
-🔍 Generate Query Embedding (OpenAI)
+🔤 生成问题向量 (OpenAI Embedding)
     ↓
-🗄️ Vector Similarity Search (ChromaDB)
-    ↓ TOP_K=20
-📊 Filter by Similarity Threshold (0.7)
-    ↓ TOP_N=5
-📚 Retrieve Note Chunks
+🔍 向量相似度搜索 (ChromaDB)
+    ↓ 检索 TOP_K=20 个结果
+📊 按相似度阈值过滤 (threshold=0.7)
+    ↓ 取前 TOP_N=5 个块
+📚 获取笔记块内容
     ↓
-🤖 Build Prompt (System + Context + History + Question)
+🧠 构建提示词
+    ├─ 系统指令 (角色定义)
+    ├─ 上下文 (检索到的笔记)
+    ├─ 历史对话 (最近 5 条)
+    └─ 用户问题
     ↓
-💬 Generate Answer (GPT-3.5-turbo)
+🤖 调用 GPT-3.5-turbo 生成回答
     ↓
-📤 Return Answer + Sources
+💾 保存到数据库 (conversations + messages)
+    ↓
+📤 返回答案 + 来源引用
 ```
 
-### Data Flow
+### 数据流向图
 
 ```
-Notes Upload:
-User → Frontend → API → Service → Database
-                               ↓
-                         Text Splitter
-                               ↓
-                      Embedding Service
-                               ↓
-                          ChromaDB
+【笔记上传流程】
+用户 → 前端 → API → Service → Database
+                        ↓
+                  Text Splitter
+                   (分块处理)
+                        ↓
+                Embedding Service
+                 (生成向量)
+                        ↓
+                    ChromaDB
+                 (存储向量索引)
 
-RAG Q&A:
-User → Frontend → API → RAG Service
-                           ↓
-                    1. Retrieve Context (ChromaDB)
-                    2. Format Prompt
-                    3. Call LLM (OpenAI)
-                    4. Save Conversation
-                           ↓
-                       Database
+【AI 问答流程】
+用户 → 前端 → API → RAG Service
+                        ↓
+                1. 检索上下文 (ChromaDB)
+                2. 格式化提示词
+                3. 调用 LLM (OpenAI)
+                4. 保存会话
+                        ↓
+                   PostgreSQL
+                 (conversations + messages)
 ```
 
 ---
 
-## 🗄️ Database Schema
+## 🗄️ 数据库设计
 
-### Complete Entity-Relationship Diagram
+### ER 实体关系图
 
 ```
-┌─────────────┐
-│    users    │
-├─────────────┤
-│ id (PK)     │
-│ username    │
-│ email       │
-│ password    │
-└──────┬──────┘
+┌──────────────┐
+│    users     │  用户表
+├──────────────┤
+│ id (PK)      │  UUID 主键
+│ username     │  用户名
+│ email        │  邮箱
+│ password     │  密码哈希
+│ created_at   │  创建时间
+└──────┬───────┘
        │
-       │ (1:N)
+       │ (1:N) 一个用户有多个笔记/会话/DDL
        │
-┌──────▼──────────┐     ┌─────────────────┐
-│     notes       │────→│  note_chunks    │
-├─────────────────┤ 1:N ├─────────────────┤
-│ id (PK)         │     │ id (PK)         │
-│ user_id (FK)    │     │ note_id (FK)    │
-│ title           │     │ chunk_index     │
-│ file_type       │     │ content         │
-│ file_path       │     │ vector_id       │
-│ content         │     │ created_at      │
-│ category        │     └─────────────────┘
-│ tags (JSONB)    │
-│ created_at      │
-│ updated_at      │
-└─────────────────┘
+┌──────▼───────────┐         ┌──────────────────┐
+│     notes        │────────▶│  note_chunks     │  笔记块表
+├──────────────────┤   1:N   ├──────────────────┤
+│ id (PK)          │         │ id (PK)          │  UUID 主键
+│ user_id (FK)     │         │ note_id (FK)     │  外键 → notes.id
+│ title            │         │ chunk_index      │  块序号
+│ file_type        │         │ content          │  块内容
+│ file_path        │         │ vector_id        │  ChromaDB ID
+│ content          │         │ created_at       │  创建时间
+│ category         │         └──────────────────┘
+│ tags (JSONB)     │
+│ created_at       │
+│ updated_at       │
+└──────────────────┘
 
-┌──────▼──────────────┐     ┌─────────────────┐
-│  conversations      │────→│    messages     │
-├─────────────────────┤ 1:N ├─────────────────┤
-│ id (PK)             │     │ id (PK)         │
-│ user_id (FK)        │     │ conversation_id │
-│ title               │     │ role            │
-│ created_at          │     │ content         │
-│ updated_at          │     │ sources (JSONB) │
-└─────────────────────┘     │ created_at      │
-                            └─────────────────┘
+┌──────▼───────────────┐         ┌──────────────────┐
+│  conversations       │────────▶│    messages      │  消息表
+├──────────────────────┤   1:N   ├──────────────────┤
+│ id (PK)              │         │ id (PK)          │  UUID 主键
+│ user_id (FK)         │         │ conversation_id  │  外键 → conversations.id
+│ title                │         │ role             │  user / assistant
+│ created_at           │         │ content          │  消息内容
+│ updated_at           │         │ sources (JSONB)  │  来源引用
+└──────────────────────┘         │ created_at       │  创建时间
+                                 └──────────────────┘
 
-┌──────▼──────────┐
-│   deadlines     │
-├─────────────────┤
-│ id (PK)         │
-│ user_id (FK)    │
-│ title           │
-│ course          │
-│ description     │
-│ due_date        │
-│ priority        │
-│ status          │
-│ reminder_sent   │
-│ created_at      │
-│ updated_at      │
-└─────────────────┘
+┌──────▼───────────┐
+│   deadlines      │  DDL 表
+├──────────────────┤
+│ id (PK)          │  UUID 主键
+│ user_id (FK)     │  外键 → users.id
+│ title            │  标题
+│ course           │  课程名称
+│ description      │  描述
+│ due_date         │  截止时间
+│ priority         │  优先级: low/medium/high
+│ status           │  状态: pending/completed
+│ reminder_sent    │  是否已发送提醒
+│ created_at       │  创建时间
+│ updated_at       │  更新时间
+│ completed_at     │  完成时间
+└──────────────────┘
 ```
 
-### Table Details
+### 表详细说明
 
-#### `notes`
-- **Purpose**: Store uploaded note files and metadata
-- **Indexes**: `user_id`, `category`, `created_at`
-- **Relationships**: 1:N with `note_chunks`
+<table>
+<tr>
+<th>表名</th>
+<th>用途</th>
+<th>索引</th>
+<th>关键字段</th>
+</tr>
 
-#### `note_chunks`
-- **Purpose**: Store text chunks for vector search
-- **Indexes**: `note_id`, `chunk_index`
-- **Vector Storage**: `vector_id` references ChromaDB entry
+<tr>
+<td><code>users</code></td>
+<td>用户信息（预留，当前未启用）</td>
+<td><code>email</code> (UNIQUE)<br><code>username</code></td>
+<td><code>password</code> (bcrypt 哈希)</td>
+</tr>
 
-#### `conversations`
-- **Purpose**: Group chat messages into conversations
-- **Indexes**: `user_id`, `updated_at`
-- **Relationships**: 1:N with `messages`
+<tr>
+<td><code>notes</code></td>
+<td>笔记文件元数据</td>
+<td><code>user_id</code><br><code>category</code><br><code>created_at</code></td>
+<td><code>tags</code> (JSONB 数组)<br><code>file_path</code> (本地路径)</td>
+</tr>
 
-#### `messages`
-- **Purpose**: Store individual chat messages
-- **JSONB Fields**: `sources` (note references)
-- **Indexes**: `conversation_id`, `created_at`
+<tr>
+<td><code>note_chunks</code></td>
+<td>笔记分块（用于向量搜索）</td>
+<td><code>note_id</code><br><code>chunk_index</code></td>
+<td><code>vector_id</code> (ChromaDB 引用)<br><code>content</code> (分块文本)</td>
+</tr>
 
-#### `deadlines`
-- **Purpose**: Track assignment and exam deadlines
-- **Indexes**: `user_id`, `due_date`, `status`
-- **Enums**: priority (low/medium/high), status (pending/completed)
+<tr>
+<td><code>conversations</code></td>
+<td>对话会话分组</td>
+<td><code>user_id</code><br><code>updated_at</code></td>
+<td><code>title</code> (自动生成或用户指定)</td>
+</tr>
+
+<tr>
+<td><code>messages</code></td>
+<td>对话消息记录</td>
+<td><code>conversation_id</code><br><code>created_at</code></td>
+<td><code>role</code> (user/assistant)<br><code>sources</code> (JSONB 来源列表)</td>
+</tr>
+
+<tr>
+<td><code>deadlines</code></td>
+<td>作业/考试截止日期</td>
+<td><code>user_id</code><br><code>due_date</code><br><code>status</code></td>
+<td><code>priority</code> (枚举)<br><code>status</code> (枚举)<br><code>reminder_sent</code> (布尔)</td>
+</tr>
+</table>
 
 ---
 
-## ⚙️ Configuration
+## ⚙️ 配置说明
 
-### Backend Environment Variables
+### 后端环境变量 (`backend/.env`)
 
-```env
-# Application
+```bash
+# ========== 应用配置 ==========
 APP_NAME=StudyPal - AI Learning Assistant
 API_HOST=0.0.0.0
 API_PORT=8000
 DEBUG=true
 
-# Database
-DATABASE_URL=postgresql://studypal_user:password@postgres:5432/studypal_db
+# ========== 数据库配置 ==========
+DATABASE_URL=postgresql://studypal_user:studypal_password@postgres:5432/studypal_db
 
-# OpenAI Configuration
-OPENAI_API_KEY=sk-your-key-here
-OPENAI_MODEL=gpt-3.5-turbo              # or gpt-4
+# ========== OpenAI 配置 ==========
+OPENAI_API_KEY=sk-your-openai-api-key-here
+OPENAI_MODEL=gpt-3.5-turbo                  # 或 gpt-4
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
-LLM_TEMPERATURE=0.5                     # 0.0-1.0 (higher = more creative)
-LLM_MAX_TOKENS=2000
+LLM_TEMPERATURE=0.5                         # 0.0-1.0 (越高越有创造性)
+LLM_MAX_TOKENS=2000                         # 最大回复长度
 
-# Vector Search Configuration
+# ========== 向量搜索配置 ==========
 VECTOR_DB=chroma
 CHROMA_PERSIST_DIR=/app/chroma_db
-SIMILARITY_THRESHOLD=0.7                # 0.0-1.0 (lower = stricter)
-TOP_K=20                                # Initial retrieval count
-TOP_N=5                                 # Final context chunks
+SIMILARITY_THRESHOLD=0.7                    # 相似度阈值 (越低越严格)
+TOP_K=20                                    # 初始检索数量
+TOP_N=5                                     # 最终上下文块数
 
-# File Upload Configuration
+# ========== 文件上传配置 ==========
 UPLOAD_DIR=/app/uploads
-MAX_FILE_SIZE_MB=10
-MAX_UPLOAD_SIZE_MB=100
+MAX_FILE_SIZE_MB=10                         # 单文件大小限制
+MAX_UPLOAD_SIZE_MB=100                      # 总上传大小限制
 SUPPORTED_EXTENSIONS=.md,.txt,.cpp,.c,.py,.java,.js,.ts,.jsx,.tsx
 
-# Text Processing
-CHUNK_SIZE=1000                         # Characters per chunk
-CHUNK_OVERLAP=200                       # Overlap between chunks
+# ========== 文本处理配置 ==========
+CHUNK_SIZE=1000                             # 每块字符数
+CHUNK_OVERLAP=200                           # 块之间重叠字符数
 
-# Security
+# ========== 安全配置 ==========
 SECRET_KEY=your-secret-key-change-in-production
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=1440
 
-# Performance
+# ========== 性能配置 ==========
 CACHE_TTL_SECONDS=600
 ENABLE_QUERY_CACHE=true
 RATE_LIMIT_PER_MINUTE=60
 
-# CORS
+# ========== CORS 配置 ==========
 CORS_ORIGINS=http://localhost:3000,http://localhost:5173
 ```
 
-### Frontend Environment Variables
+### 前端环境变量 (`frontend/.env`)
 
-```env
+```bash
 VITE_API_BASE_URL=http://localhost:8000
 ```
 
-### Tuning Tips
+### 🎯 调优建议
 
-#### For Better Answer Quality
+<table>
+<tr>
+<th>目标</th>
+<th>推荐配置</th>
+<th>说明</th>
+</tr>
+
+<tr>
+<td>🎯 <b>提高答案质量</b></td>
+<td>
+
 ```env
-LLM_TEMPERATURE=0.3          # More factual, less creative
-TOP_N=7                       # More context
-SIMILARITY_THRESHOLD=0.6      # Include more sources
+LLM_TEMPERATURE=0.3
+TOP_N=7
+SIMILARITY_THRESHOLD=0.6
 ```
 
-#### For Faster Performance
+</td>
+<td>
+• 降低温度让回答更准确<br>
+• 增加上下文块数<br>
+• 降低阈值纳入更多来源
+</td>
+</tr>
+
+<tr>
+<td>⚡ <b>提高响应速度</b></td>
+<td>
+
 ```env
-TOP_K=10                      # Fewer initial results
-TOP_N=3                       # Less context
-CHUNK_SIZE=500                # Smaller chunks
+TOP_K=10
+TOP_N=3
+CHUNK_SIZE=500
 ```
 
-#### For Longer Notes
+</td>
+<td>
+• 减少初始检索数量<br>
+• 减少上下文块数<br>
+• 使用更小的块
+</td>
+</tr>
+
+<tr>
+<td>📚 <b>处理长文档</b></td>
+<td>
+
 ```env
-CHUNK_SIZE=1500               # Bigger chunks
-CHUNK_OVERLAP=300             # More overlap
+CHUNK_SIZE=1500
+CHUNK_OVERLAP=300
+MAX_FILE_SIZE_MB=20
 ```
+
+</td>
+<td>
+• 增大块尺寸<br>
+• 增加重叠保留上下文<br>
+• 放宽文件大小限制
+</td>
+</tr>
+
+<tr>
+<td>💡 <b>更有创意的回答</b></td>
+<td>
+
+```env
+LLM_TEMPERATURE=0.8
+OPENAI_MODEL=gpt-4
+```
+
+</td>
+<td>
+• 提高温度增加创造性<br>
+• 使用 GPT-4 (成本更高)
+</td>
+</tr>
+</table>
 
 ---
 
-## 🧪 Testing
+## 🧪 测试指南
 
-### Quick Test with Sample Notes
+### 快速测试（使用示例笔记）
 
-We provide 3 high-quality sample notes in `test_notes/`:
+我们在 `test_notes/` 目录提供了 3 个高质量示例笔记：
 
-1. **xv6_page_table.md** - OS: xv6 page table mechanism
-2. **tcp_handshake.md** - Networks: TCP handshake
-3. **database_index.md** - Database: Index principles
+1. **xv6_page_table.md** - 操作系统：xv6 页表机制
+2. **tcp_handshake.md** - 计算机网络：TCP 三次握手
+3. **database_index.md** - 数据库：索引原理
+
+#### 📤 上传测试笔记
 
 ```bash
-# Upload samples
 cd test_notes
+
+# 上传所有示例笔记
 curl -X POST http://localhost:8000/api/notes/upload \
   -F "files=@xv6_page_table.md" \
   -F "files=@tcp_handshake.md" \
   -F "files=@database_index.md"
+```
 
-# Test semantic search
+#### 🔍 测试语义搜索
+
+```bash
+# 测试 1: 搜索页表相关内容
 curl "http://localhost:8000/api/notes/search?query=页表机制&k=3"
 
-# Test RAG Q&A
+# 测试 2: 搜索网络相关内容
+curl "http://localhost:8000/api/notes/search?query=三次握手&k=3"
+
+# 测试 3: 搜索数据库相关内容
+curl "http://localhost:8000/api/notes/search?query=B+Tree索引&k=3"
+```
+
+#### 🤖 测试 AI 问答
+
+```bash
+# 问题 1: 操作系统
 curl -X POST http://localhost:8000/api/chat/ask \
   -H "Content-Type: application/json" \
   -d '{"question": "xv6的页表是怎么工作的？"}'
+
+# 问题 2: 计算机网络
+curl -X POST http://localhost:8000/api/chat/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question": "为什么TCP需要三次握手？"}'
+
+# 问题 3: 数据库
+curl -X POST http://localhost:8000/api/chat/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question": "B+Tree有什么特点？"}'
 ```
 
-### Comprehensive Testing Guide
+#### 📅 测试 DDL 管理
 
-See **[TESTING.md](./TESTING.md)** for:
-- Complete test scenarios
-- API testing examples
-- Performance benchmarks
-- Automated test scripts
-- Quality evaluation metrics
+```bash
+# 创建 DDL
+curl -X POST http://localhost:8000/api/deadlines \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "数据库大作业",
+    "course": "数据库系统",
+    "due_date": "2024-12-25T23:59:00",
+    "priority": "high",
+    "description": "完成ER图设计"
+  }'
+
+# 获取统计信息
+curl http://localhost:8000/api/deadlines/statistics
+
+# 获取即将到期的 DDL
+curl "http://localhost:8000/api/deadlines/upcoming?days=7"
+```
+
+### 📋 完整测试文档
+
+详细测试指南请查看 **[TESTING.md](./TESTING.md)**，包含：
+- ✅ 完整测试场景
+- 📊 API 测试示例
+- ⚡ 性能基准测试
+- 🤖 自动化测试脚本
+- 📈 质量评估指标
 
 ---
 
-## 🚢 Deployment
+## 🚢 部署方案
 
-### Production Checklist
+### ☑️ 生产环境检查清单
 
-- [ ] Change `SECRET_KEY` in backend/.env
-- [ ] Use strong PostgreSQL password
-- [ ] Set `DEBUG=false` in production
-- [ ] Configure proper `CORS_ORIGINS`
-- [ ] Set up HTTPS/SSL certificates
-- [ ] Use production-grade OpenAI API key
-- [ ] Set up database backups
-- [ ] Configure log rotation
-- [ ] Set up monitoring (Prometheus/Grafana)
-- [ ] Implement rate limiting
-- [ ] Add user authentication
+部署前请确保完成以下配置：
 
-### Docker Production Deployment
+- [ ] 修改 `backend/.env` 中的 `SECRET_KEY`
+- [ ] 使用强密码配置 PostgreSQL
+- [ ] 设置 `DEBUG=false`
+- [ ] 配置正确的 `CORS_ORIGINS`
+- [ ] 配置 HTTPS/SSL 证书
+- [ ] 使用生产级 OpenAI API Key（设置使用限额）
+- [ ] 设置数据库定期备份
+- [ ] 配置日志轮转
+- [ ] 部署监控系统 (Prometheus/Grafana)
+- [ ] 实现 API 速率限制
+- [ ] 启用用户认证系统
+
+### 🐳 Docker 生产部署
 
 ```bash
-# Build production images
+# 构建生产镜像
 docker-compose -f docker-compose.prod.yml build
 
-# Start services
+# 启动所有服务（后台运行）
 docker-compose -f docker-compose.prod.yml up -d
 
-# Check logs
+# 查看日志
 docker-compose logs -f backend
+docker-compose logs -f frontend
+
+# 停止服务
+docker-compose -f docker-compose.prod.yml down
 ```
 
-### Manual Deployment
+### 🔧 手动部署
 
-#### Backend
+#### 后端部署
+
 ```bash
 cd backend
+
+# 安装依赖
 pip install -r requirements.txt
-gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+
+# 使用 Gunicorn + Uvicorn Workers 运行
+gunicorn app.main:app \
+  --workers 4 \
+  --worker-class uvicorn.workers.UvicornWorker \
+  --bind 0.0.0.0:8000 \
+  --timeout 120
 ```
 
-#### Frontend
+#### 前端部署
+
 ```bash
 cd frontend
+
+# 安装依赖
 npm install
+
+# 构建生产版本
 npm run build
-# Serve dist/ with nginx or any static file server
+
+# 部署 dist/ 目录
+# 方案 1: 使用 Nginx
+# 方案 2: 使用 Apache
+# 方案 3: 使用 Vercel/Netlify
+```
+
+#### Nginx 配置示例
+
+```nginx
+# 前端
+server {
+    listen 80;
+    server_name studypal.example.com;
+
+    root /var/www/studypal/frontend/dist;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+
+# 后端 API
+server {
+    listen 80;
+    server_name api.studypal.example.com;
+
+    location / {
+        proxy_pass http://localhost:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
 ```
 
 ---
 
-## 🗺️ Roadmap
+## 🗺️ 发展路线
 
-### ✅ Phase 1: Foundation (Completed)
-- [x] Project structure setup
-- [x] Database models (5 tables)
-- [x] Docker configuration
-- [x] FastAPI framework
-- [x] React + TypeScript setup
+### ✅ 第一阶段：基础框架（已完成）
+- [x] 项目结构搭建
+- [x] 数据库模型设计（5 张表）
+- [x] Docker 配置
+- [x] FastAPI 框架搭建
+- [x] React + TypeScript 前端搭建
 
-### ✅ Phase 2: Note Management (Completed)
-- [x] File upload with validation
-- [x] Text chunking (RecursiveCharacterTextSplitter)
-- [x] Vector embeddings (OpenAI)
-- [x] ChromaDB integration
-- [x] Semantic search API
-- [x] CRUD operations
+### ✅ 第二阶段：笔记管理（已完成）
+- [x] 文件上传与验证
+- [x] 文本分块 (RecursiveCharacterTextSplitter)
+- [x] 向量嵌入生成 (OpenAI)
+- [x] ChromaDB 向量数据库集成
+- [x] 语义搜索 API
+- [x] 笔记 CRUD 操作
 
-### ✅ Phase 3: RAG Q&A System (Completed)
-- [x] RAG service implementation
-- [x] Vector retrieval pipeline
-- [x] LLM integration (GPT-3.5)
-- [x] Conversation management
-- [x] Chat interface with Markdown
-- [x] Source attribution
-- [x] Multi-turn dialogue
+### ✅ 第三阶段：RAG 问答系统（已完成）
+- [x] RAG 服务实现
+- [x] 向量检索流程
+- [x] LLM 集成 (GPT-3.5)
+- [x] 会话管理
+- [x] 聊天界面 + Markdown 渲染
+- [x] 来源追溯
+- [x] 多轮对话
 
-### ✅ Phase 4: DDL Management (Completed)
-- [x] Deadline CRUD API
-- [x] Priority and status management
-- [x] Statistics dashboard
-- [x] List views (upcoming, overdue, completed)
-- [x] Visual time indicators
-- [x] Responsive UI
+### ✅ 第四阶段：DDL 管理（已完成）
+- [x] DDL CRUD API
+- [x] 优先级和状态管理
+- [x] 统计面板
+- [x] 列表视图（即将到期、已逾期、已完成）
+- [x] 时间可视化指示
+- [x] 响应式 UI
 
-### 🔜 Phase 5: Enhancement (Next)
-- [ ] Auto-categorization with LLM
-- [ ] Automatic tag extraction
-- [ ] Query caching for performance
-- [ ] Advanced analytics
-- [ ] Unit and integration tests
+### 🔜 第五阶段：智能增强（规划中）
+- [ ] 使用 LLM 自动分类笔记
+- [ ] 自动提取标签
+- [ ] 查询结果缓存优化
+- [ ] 高级数据分析
+- [ ] 单元测试和集成测试
 
-### 🚀 Future Enhancements
-- [ ] User authentication (JWT)
-- [ ] Calendar view for deadlines
-- [ ] Email/push notifications
-- [ ] Knowledge graph visualization
-- [ ] Learning progress analytics
-- [ ] Note sharing and collaboration
-- [ ] Mobile app (React Native)
-- [ ] Offline mode support
-- [ ] Multi-language support
-- [ ] Voice input/output
+### 🚀 未来展望
 
----
+<table>
+<tr>
+<td width="50%" valign="top">
 
-## 📊 Project Statistics
+#### 🔐 用户系统
+- [ ] JWT 身份认证
+- [ ] 用户注册/登录
+- [ ] 个人资料管理
+- [ ] 权限控制
 
-- **Total Files**: 64+
-- **Lines of Code**: 6,000+
-- **API Endpoints**: 20
-- **Database Tables**: 5
-- **React Components**: 15+
-- **Development Time**: 4 phases
-- **Test Coverage**: Coming soon
+#### 📱 移动端
+- [ ] React Native 移动应用
+- [ ] 离线模式支持
+- [ ] 推送通知
+- [ ] 语音输入
 
----
+</td>
+<td width="50%" valign="top">
 
-## 🤝 Contributing
+#### 🎨 功能扩展
+- [ ] 日历视图展示 DDL
+- [ ] 邮件提醒
+- [ ] 知识图谱可视化
+- [ ] 学习进度分析
+- [ ] 笔记分享与协作
 
-We welcome contributions! Please follow these steps:
+#### 🌍 国际化
+- [ ] 多语言支持
+- [ ] 本地化界面
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Code Style
-
-- **Python**: Follow PEP 8
-- **TypeScript**: Use ESLint configuration
-- **Commits**: Use conventional commits (feat:, fix:, docs:, etc.)
+</td>
+</tr>
+</table>
 
 ---
 
-## 📄 License
+## 📊 项目数据
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+<div align="center">
 
----
+| 📈 指标 | 💯 数值 |
+|--------|---------|
+| **代码文件数** | 64+ |
+| **代码行数** | 6,000+ |
+| **API 端点** | 20 |
+| **数据库表** | 5 |
+| **React 组件** | 15+ |
+| **开发阶段** | 4 个阶段 |
+| **测试覆盖率** | 敬请期待 |
 
-## 🙏 Acknowledgments
-
-- **[LangChain](https://langchain.com/)** - RAG framework
-- **[OpenAI](https://openai.com/)** - GPT and embeddings
-- **[FastAPI](https://fastapi.tiangolo.com/)** - Python web framework
-- **[React](https://reactjs.org/)** - Frontend framework
-- **[ChromaDB](https://www.trychroma.com/)** - Vector database
-- **[Tailwind CSS](https://tailwindcss.com/)** - Styling framework
-
----
-
-## 📞 Support
-
-For issues, questions, or suggestions:
-- 📧 Open an issue on GitHub
-- 📚 Check [TESTING.md](./TESTING.md) for testing guide
-- 💬 Review existing issues for solutions
+</div>
 
 ---
 
-## 📸 Screenshots
+## 🤝 贡献指南
 
-### Homepage
-Beautiful landing page with 3 core features highlighted.
+欢迎贡献代码！请遵循以下步骤：
 
-### Chat Interface
-AI-powered Q&A with source attribution and Markdown rendering.
+1. **Fork** 本仓库
+2. **创建** 特性分支 (`git checkout -b feature/amazing-feature`)
+3. **提交** 你的修改 (`git commit -m 'feat: Add amazing feature'`)
+4. **推送** 到分支 (`git push origin feature/amazing-feature`)
+5. **开启** Pull Request
 
-### Deadlines Dashboard
-Visual DDL tracking with statistics and smart time indicators.
+### 📝 代码规范
+
+- **Python**: 遵循 PEP 8 规范
+- **TypeScript**: 使用项目配置的 ESLint
+- **提交信息**: 使用约定式提交
+  - `feat:` 新功能
+  - `fix:` 修复 Bug
+  - `docs:` 文档更新
+  - `style:` 代码格式
+  - `refactor:` 重构
+  - `test:` 测试相关
+  - `chore:` 构建/工具相关
 
 ---
 
-**Made with ❤️ for Computer Science Students**
+## 📄 开源协议
 
-**Happy Learning with StudyPal! 📚🤖✨**
+本项目采用 **MIT License** 开源协议 - 详见 [LICENSE](LICENSE) 文件
+
+---
+
+## 🙏 致谢
+
+感谢以下开源项目：
+
+<table>
+<tr>
+<td align="center" width="25%">
+<a href="https://langchain.com/">
+<img src="https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white" alt="LangChain"/>
+</a><br>
+<b>RAG 框架</b>
+</td>
+<td align="center" width="25%">
+<a href="https://openai.com/">
+<img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI"/>
+</a><br>
+<b>GPT & Embeddings</b>
+</td>
+<td align="center" width="25%">
+<a href="https://fastapi.tiangolo.com/">
+<img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI"/>
+</a><br>
+<b>Python Web 框架</b>
+</td>
+<td align="center" width="25%">
+<a href="https://reactjs.org/">
+<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React"/>
+</a><br>
+<b>前端框架</b>
+</td>
+</tr>
+<tr>
+<td align="center" width="25%">
+<a href="https://www.trychroma.com/">
+<img src="https://img.shields.io/badge/ChromaDB-FF6B6B?style=for-the-badge" alt="ChromaDB"/>
+</a><br>
+<b>向量数据库</b>
+</td>
+<td align="center" width="25%">
+<a href="https://tailwindcss.com/">
+<img src="https://img.shields.io/badge/Tailwind-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind"/>
+</a><br>
+<b>CSS 框架</b>
+</td>
+<td align="center" width="25%">
+<a href="https://www.postgresql.org/">
+<img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL"/>
+</a><br>
+<b>关系型数据库</b>
+</td>
+<td align="center" width="25%">
+<a href="https://www.docker.com/">
+<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker"/>
+</a><br>
+<b>容器化平台</b>
+</td>
+</tr>
+</table>
+
+---
+
+## 💬 支持与反馈
+
+遇到问题或有建议？
+
+- 📧 **提交 Issue**: [GitHub Issues](https://github.com/your-username/studypal/issues)
+- 📚 **查看文档**: [测试指南 TESTING.md](./TESTING.md)
+- 💭 **查找答案**: 浏览已有的 Issues
+
+---
+
+## 📸 界面预览
+
+### 🏠 首页
+精美的着陆页，突出展示三大核心功能模块
+
+### 💬 聊天界面
+AI 智能问答，来源追溯，Markdown 渲染，代码高亮
+
+### 📅 DDL 面板
+可视化截止日期追踪，统计面板，智能时间提示
+
+---
+
+<div align="center">
+
+### 🎓 专为计算机系学生打造
+
+**用 StudyPal，让学习更高效！ 📚🤖✨**
+
+---
+
+**如果这个项目对你有帮助，请给一个 ⭐ Star 支持一下！**
+
+[![Star History](https://img.shields.io/github/stars/your-username/studypal?style=social)](https://github.com/your-username/studypal/stargazers)
+
+</div>
