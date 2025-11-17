@@ -6,8 +6,20 @@ from sqlalchemy.orm import Session
 from datetime import timedelta
 
 from ..database import get_db
-from ..schemas.auth import UserCreate, UserLogin, UserResponse, UserWithToken, Token
+from ..schemas.auth import (
+    UserCreate,
+    UserLogin,
+    UserResponse,
+    UserWithToken,
+    Token,
+    UserProfileUpdate,
+    PasswordChange,
+    PasswordResetRequest,
+    PasswordResetConfirm,
+    OAuthLoginRequest,
+)
 from ..services.auth_service import auth_service
+from ..services.oauth_service import oauth_service
 from ..dependencies import get_current_active_user
 from ..models.user import User
 from ..config import settings
@@ -135,3 +147,214 @@ async def refresh_token(
     )
 
     return Token(access_token=access_token, token_type="bearer")
+
+
+@router.put("/profile", response_model=UserResponse)
+async def update_profile(
+    profile_update: UserProfileUpdate,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """
+    更新个人资料
+
+    支持更新以下字段：
+    - **username**: 用户名
+    - **full_name**: 真实姓名
+    - **bio**: 个人简介
+    - **avatar_url**: 头像 URL
+
+    所有字段均为可选，只更新提供的字段
+    """
+    # 检查用户名是否已被使用
+    if profile_update.username:
+        existing_user = auth_service.get_user_by_username(db, profile_update.username)
+        if existing_user and existing_user.id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="该用户名已被使用"
+            )
+
+    updated_user = auth_service.update_user_profile(db, current_user.id, profile_update)
+    if not updated_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="用户不存在"
+        )
+
+    return UserResponse.model_validate(updated_user)
+
+
+@router.post("/change-password", status_code=status.HTTP_200_OK)
+async def change_password(
+    password_change: PasswordChange,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """
+    修改密码
+
+    需要提供当前密码进行验证
+    """
+    success = auth_service.change_password(
+        db,
+        current_user.id,
+        password_change.current_password,
+        password_change.new_password
+    )
+
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="当前密码错误"
+        )
+
+    return {"message": "密码修改成功"}
+
+
+@router.post("/password-reset/request", status_code=status.HTTP_200_OK)
+async def request_password_reset(
+    reset_request: PasswordResetRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    请求密码重置
+
+    向注册邮箱发送重置令牌。
+    **注意**：实际生产环境中，应该通过邮件发送令牌。
+    此 MVP 版本直接返回令牌用于测试。
+    """
+    reset_token = auth_service.create_reset_token(db, reset_request.email)
+
+    if not reset_token:
+        # 为了安全，即使邮箱不存在也返回成功
+        # 避免泄露用户邮箱是否已注册
+        return {
+            "message": "如果该邮箱已注册，重置链接已发送",
+            "reset_token": None
+        }
+
+    # MVP 版本：直接返回令牌（生产环境应通过邮件发送）
+    return {
+        "message": "密码重置令牌已生成",
+        "reset_token": reset_token,
+        "note": "生产环境中此令牌应通过邮件发送，而非直接返回"
+    }
+
+
+@router.post("/password-reset/confirm", status_code=status.HTTP_200_OK)
+async def confirm_password_reset(
+    reset_confirm: PasswordResetConfirm,
+    db: Session = Depends(get_db)
+):
+    """
+    确认密码重置
+
+    使用重置令牌设置新密码
+    """
+    success = auth_service.reset_password(
+        db,
+        reset_confirm.reset_token,
+        reset_confirm.new_password
+    )
+
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="重置令牌无效或已过期"
+        )
+
+    return {"message": "密码重置成功"}
+
+
+@router.get("/oauth/{provider}/authorize")
+async def oauth_authorize(provider: str, redirect_uri: str):
+    """
+    获取 OAuth 授权 URL
+
+    支持的提供商：
+    - **google**: Google OAuth
+    - **github**: GitHub OAuth
+
+    返回授权 URL，前端应重定向到该 URL
+    """
+    if provider not in ["google", "github"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="不支持的 OAuth 提供商"
+        )
+
+    auth_url = oauth_service.get_authorization_url(provider, redirect_uri)
+    if not auth_url:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="OAuth 配置错误"
+        )
+
+    return {"authorization_url": auth_url}
+
+
+@router.post("/oauth/login", response_model=UserWithToken)
+async def oauth_login(
+    oauth_request: OAuthLoginRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    OAuth 登录
+
+    使用授权码完成 OAuth 登录流程
+    """
+    if oauth_request.provider not in ["google", "github"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="不支持的 OAuth 提供商"
+        )
+
+    # 用授权码换取访问令牌
+    access_token = await oauth_service.exchange_code_for_token(
+        oauth_request.provider,
+        oauth_request.code,
+        oauth_request.redirect_uri
+    )
+
+    if not access_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="OAuth 授权失败"
+        )
+
+    # 获取用户信息
+    user_info = await oauth_service.get_user_info(
+        oauth_request.provider,
+        access_token
+    )
+
+    if not user_info or not user_info.get("email"):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="无法获取用户信息"
+        )
+
+    # 获取或创建用户
+    user = auth_service.get_or_create_oauth_user(
+        db,
+        email=user_info["email"],
+        oauth_provider=oauth_request.provider,
+        oauth_id=user_info["oauth_id"],
+        username=user_info.get("username"),
+        full_name=user_info.get("full_name"),
+        avatar_url=user_info.get("avatar_url")
+    )
+
+    # 生成 JWT 令牌
+    token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    jwt_token = auth_service.create_access_token(
+        data={"sub": str(user.id), "email": user.email},
+        expires_delta=token_expires
+    )
+
+    return UserWithToken(
+        user=UserResponse.model_validate(user),
+        access_token=jwt_token,
+        token_type="bearer"
+    )

@@ -47,6 +47,12 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440  # 24 hours
 
+    # OAuth
+    GOOGLE_CLIENT_ID: Optional[str] = None
+    GOOGLE_CLIENT_SECRET: Optional[str] = None
+    GITHUB_CLIENT_ID: Optional[str] = None
+    GITHUB_CLIENT_SECRET: Optional[str] = None
+
     # Cache
     CACHE_TTL_SECONDS: int = 600
     ENABLE_QUERY_CACHE: bool = True

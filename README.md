@@ -112,6 +112,8 @@
 | **🆕 智能分类** | LLM 自动分类笔记并提取技术标签 |
 | **🆕 查询缓存** | LRU/TTL 缓存策略提升响应速度 |
 | **🆕 JWT 认证** | 安全的用户认证和授权系统 |
+| **🆕 OAuth 登录** | 支持 Google/GitHub 第三方登录 |
+| **🆕 个人资料管理** | 完整的用户资料和密码管理功能 |
 | **🆕 数据导出** | 支持 JSON/Markdown/CSV 多格式导出 |
 | **🆕 测试覆盖** | 完整的单元测试确保代码质量 |
 | **一键部署** | Docker Compose 一条命令启动全部服务 |
@@ -549,7 +551,7 @@ DELETE /api/deadlines/{deadline_id}
 
 ---
 
-### 🔐 用户认证 API（4 个端点）
+### 🔐 用户认证 API（11 个端点）
 
 <details>
 <summary><b>🆕 ✍️ 用户注册</b></summary>
@@ -561,7 +563,8 @@ Content-Type: application/json
 {
   "username": "your_username",
   "email": "your_email@example.com",
-  "password": "your_password"
+  "password": "your_password",
+  "full_name": "Your Name" // 可选
 }
 ```
 
@@ -572,6 +575,7 @@ Content-Type: application/json
     "id": "uuid",
     "username": "your_username",
     "email": "your_email@example.com",
+    "full_name": "Your Name",
     "is_active": true,
     "created_at": "2024-01-01T00:00:00"
   },
@@ -620,6 +624,135 @@ Authorization: Bearer <access_token>
 ```
 
 **需要认证**。使用当前令牌获取新的访问令牌。
+
+</details>
+
+<details>
+<summary><b>🆕 📝 更新个人资料</b></summary>
+
+```http
+PUT /api/auth/profile
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "username": "new_username", // 可选
+  "full_name": "New Name", // 可选
+  "bio": "My bio", // 可选
+  "avatar_url": "https://example.com/avatar.jpg" // 可选
+}
+```
+
+**需要认证**。更新个人资料，所有字段均可选。
+
+</details>
+
+<details>
+<summary><b>🆕 🔒 修改密码</b></summary>
+
+```http
+POST /api/auth/change-password
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "current_password": "old_password",
+  "new_password": "new_password"
+}
+```
+
+**需要认证**。修改密码需要验证当前密码。
+
+</details>
+
+<details>
+<summary><b>🆕 📧 请求密码重置</b></summary>
+
+```http
+POST /api/auth/password-reset/request
+Content-Type: application/json
+
+{
+  "email": "your_email@example.com"
+}
+```
+
+**返回重置令牌**（生产环境应通过邮件发送）。
+
+</details>
+
+<details>
+<summary><b>🆕 ✅ 确认密码重置</b></summary>
+
+```http
+POST /api/auth/password-reset/confirm
+Content-Type: application/json
+
+{
+  "reset_token": "token_from_email",
+  "new_password": "new_password"
+}
+```
+
+使用重置令牌设置新密码。
+
+</details>
+
+<details>
+<summary><b>🆕 🌐 获取 OAuth 授权 URL</b></summary>
+
+```http
+GET /api/auth/oauth/{provider}/authorize?redirect_uri=http://localhost:3000/auth/callback
+```
+
+**支持提供商**: `google`, `github`
+
+**返回授权 URL**，前端应重定向到该 URL 进行 OAuth 登录。
+
+</details>
+
+<details>
+<summary><b>🆕 🔐 OAuth 登录</b></summary>
+
+```http
+POST /api/auth/oauth/login
+Content-Type: application/json
+
+{
+  "provider": "google",
+  "code": "authorization_code",
+  "redirect_uri": "http://localhost:3000/auth/callback"
+}
+```
+
+**返回**: 用户信息和 JWT 令牌
+
+**流程**:
+1. 前端获取授权 URL 并重定向用户
+2. 用户在 OAuth 提供商完成授权
+3. 回调带有授权码
+4. 前端调用此端点完成登录
+
+</details>
+
+<details>
+<summary><b>配置 OAuth</b></summary>
+
+在 `backend/.env` 中配置 OAuth 客户端凭证：
+
+```bash
+# Google OAuth
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# GitHub OAuth
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+```
+
+**获取凭证**:
+- Google: https://console.cloud.google.com/
+- GitHub: https://github.com/settings/developers
 
 </details>
 
@@ -1451,17 +1584,25 @@ server {
 - [ ] 笔记协作分享
 - [ ] 移动端适配
 
+### ✅ 第七阶段：用户系统增强（已完成）
+- [x] 个人资料管理（更新用户名、姓名、简介、头像）
+- [x] 密码修改功能
+- [x] 密码重置功能（令牌机制）
+- [x] OAuth 第三方登录（Google & GitHub）
+- [x] 用户模型扩展（支持更多字段）
+- [x] OAuth 服务集成
+
 ### 🚀 未来展望
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-#### 🔐 用户系统增强
-- [ ] 个人资料管理
+#### 🤝 协作与分享
+- [ ] 笔记分享功能
+- [ ] 多人协作编辑
 - [ ] 权限控制和角色管理
-- [ ] OAuth 第三方登录
-- [ ] 密码重置和邮箱验证
+- [ ] 团队工作空间
 
 #### 📱 移动端
 - [ ] React Native 移动应用
@@ -1495,12 +1636,12 @@ server {
 
 | 📈 指标 | 💯 数值 |
 |--------|---------|
-| **代码文件数** | 76+ |
-| **代码行数** | 9,000+ |
-| **API 端点** | 31 |
+| **代码文件数** | 79+ |
+| **代码行数** | 10,500+ |
+| **API 端点** | 38 |
 | **数据库表** | 5 |
 | **React 组件** | 15+ |
-| **开发阶段** | 6 个阶段 ✅ |
+| **开发阶段** | 7 个阶段 ✅ |
 | **测试文件** | 3 个测试套件 |
 | **测试用例** | 40+ 个测试 |
 
