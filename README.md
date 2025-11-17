@@ -114,6 +114,7 @@
 | **🆕 JWT 认证** | 安全的用户认证和授权系统 |
 | **🆕 OAuth 登录** | 支持 Google/GitHub 第三方登录 |
 | **🆕 个人资料管理** | 完整的用户资料和密码管理功能 |
+| **🆕 笔记分享协作** | 支持公开/私密分享、权限控制、链接访问 |
 | **🆕 数据导出** | 支持 JSON/Markdown/CSV 多格式导出 |
 | **🆕 测试覆盖** | 完整的单元测试确保代码质量 |
 | **一键部署** | Docker Compose 一条命令启动全部服务 |
@@ -831,6 +832,162 @@ Authorization: Bearer <access_token>
 **需要认证**。导出所有数据（笔记、对话、DDL）为一个JSON文件。
 
 **用途**: 数据备份、数据迁移、数据分析
+
+</details>
+
+---
+
+### 🤝 笔记分享与协作 API（10 个端点）
+
+<details>
+<summary><b>🆕 🔗 创建笔记分享</b></summary>
+
+```http
+POST /api/notes/{note_id}/share
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "shared_with": "user_uuid", // 可选，null表示公开分享
+  "permission": "view", // "view" 或 "edit"
+  "expires_at": "2024-12-31T23:59:59" // 可选，null表示永不过期
+}
+```
+
+**返回**包含 `share_token`，可用于访问分享的笔记。
+
+**分享类型**:
+- **私密分享**: 指定 `shared_with` 用户ID
+- **公开分享**: `shared_with` 设为 null
+
+</details>
+
+<details>
+<summary><b>🆕 📋 获取笔记的所有分享</b></summary>
+
+```http
+GET /api/notes/{note_id}/shares
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。仅笔记所有者可查看。
+
+</details>
+
+<details>
+<summary><b>🆕 🌐 通过令牌访问分享笔记</b></summary>
+
+```http
+GET /api/shares/token/{share_token}
+```
+
+**公开端点** - 无需认证！任何持有token的人都可访问。
+
+**返回**: 分享信息 + 笔记内容
+
+</details>
+
+<details>
+<summary><b>🆕 ✏️ 更新分享设置</b></summary>
+
+```http
+PUT /api/shares/{share_id}
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "permission": "edit", // 可选
+  "expires_at": "2025-01-31T23:59:59", // 可选
+  "is_active": false // 可选，停用分享
+}
+```
+
+**需要认证**。仅分享创建者可更新。
+
+</details>
+
+<details>
+<summary><b>🆕 🗑️ 取消分享</b></summary>
+
+```http
+DELETE /api/shares/{share_id}
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。仅分享创建者可取消。
+
+</details>
+
+<details>
+<summary><b>🆕 📥 获取分享给我的笔记</b></summary>
+
+```http
+GET /api/notes/shared-with-me
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。返回其他用户分享给我的所有笔记列表。
+
+</details>
+
+<details>
+<summary><b>🆕 👥 添加用户权限</b></summary>
+
+```http
+POST /api/notes/{note_id}/permissions
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "user_id": "user_uuid",
+  "permission_level": "editor" // "owner", "editor", "viewer"
+}
+```
+
+**需要认证**。仅笔记所有者可添加权限。
+
+**权限级别**:
+- **owner**: 完全控制（可管理权限）
+- **editor**: 可编辑笔记
+- **viewer**: 只读访问
+
+</details>
+
+<details>
+<summary><b>🆕 📜 获取笔记权限列表</b></summary>
+
+```http
+GET /api/notes/{note_id}/permissions
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。仅笔记所有者可查看。
+
+</details>
+
+<details>
+<summary><b>🆕 ❌ 移除用户权限</b></summary>
+
+```http
+DELETE /api/permissions/{permission_id}
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。仅笔记所有者可移除。
+
+</details>
+
+<details>
+<summary><b>🆕 ✅ 检查访问权限</b></summary>
+
+```http
+GET /api/notes/{note_id}/check-access?permission=view
+Authorization: Bearer <access_token>
+```
+
+**需要认证**。检查当前用户是否有权限访问笔记。
+
+**参数**: `permission` - "view" 或 "edit"
 
 </details>
 
@@ -1592,16 +1749,26 @@ server {
 - [x] 用户模型扩展（支持更多字段）
 - [x] OAuth 服务集成
 
+### ✅ 第八阶段：笔记分享与协作（已完成）
+- [x] 笔记分享功能（公开/私密分享）
+- [x] 分享令牌生成和验证
+- [x] 分享权限控制（仅查看/可编辑）
+- [x] 分享过期时间设置
+- [x] 用户级别权限管理（所有者/编辑者/查看者）
+- [x] 访问权限检查系统
+- [x] 分享给我的笔记列表
+- [x] 分享访问统计
+
 ### 🚀 未来展望
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-#### 🤝 协作与分享
-- [ ] 笔记分享功能
-- [ ] 多人协作编辑
-- [ ] 权限控制和角色管理
+#### 🤝 协作功能增强
+- [ ] 实时协作编辑（WebSocket）
+- [ ] 笔记变更历史和版本控制
+- [ ] 评论和讨论功能
 - [ ] 团队工作空间
 
 #### 📱 移动端
@@ -1636,12 +1803,12 @@ server {
 
 | 📈 指标 | 💯 数值 |
 |--------|---------|
-| **代码文件数** | 79+ |
-| **代码行数** | 10,500+ |
-| **API 端点** | 38 |
-| **数据库表** | 5 |
+| **代码文件数** | 83+ |
+| **代码行数** | 11,500+ |
+| **API 端点** | 48 |
+| **数据库表** | 7 |
 | **React 组件** | 15+ |
-| **开发阶段** | 7 个阶段 ✅ |
+| **开发阶段** | 8 个阶段 ✅ |
 | **测试文件** | 3 个测试套件 |
 | **测试用例** | 40+ 个测试 |
 
