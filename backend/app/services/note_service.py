@@ -5,11 +5,15 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 from uuid import UUID
 import uuid
+import logging
 
 from ..models.note import Note, NoteChunk
 from ..schemas.note import NoteCreate, NoteUpdate
 from ..utils.text_splitter import split_text
 from .embedding_service import embedding_service
+from .classification_service import classification_service
+
+logger = logging.getLogger(__name__)
 
 
 class NoteService:
@@ -20,7 +24,8 @@ class NoteService:
         db: Session,
         note_create: NoteCreate,
         file_path: str,
-        user_id: Optional[str] = None
+        user_id: Optional[str] = None,
+        auto_classify: bool = False
     ) -> Note:
         """
         Create a note and generate embeddings
@@ -30,10 +35,39 @@ class NoteService:
             note_create: Note creation data
             file_path: Path to the saved file
             user_id: User ID
+            auto_classify: Whether to automatically classify the note using LLM
 
         Returns:
             Created note
         """
+        # 如果启用自动分类且用户未指定分类/标签，使用LLM进行分类
+        category = note_create.category
+        tags = note_create.tags or []
+
+        if auto_classify and (not category or not tags):
+            try:
+                classification_result = await classification_service.classify_note(
+                    title=note_create.title,
+                    content=note_create.content,
+                    file_type=note_create.file_type
+                )
+
+                # 如果用户未指定分类，使用自动分类结果
+                if not category:
+                    category = classification_result.get("category")
+                    logger.info(
+                        f"自动分类: '{note_create.title}' -> {category} "
+                        f"(置信度: {classification_result.get('confidence', 0):.2f})"
+                    )
+
+                # 如果用户未指定标签，使用自动提取的标签
+                if not tags:
+                    tags = classification_result.get("tags", [])
+                    logger.info(f"自动提取标签: {tags}")
+
+            except Exception as e:
+                logger.error(f"自动分类失败: {e}, 使用用户指定值或默认值")
+
         # Create note
         note = Note(
             id=uuid.uuid4(),
@@ -42,8 +76,8 @@ class NoteService:
             file_type=note_create.file_type,
             file_path=file_path,
             content=note_create.content,
-            category=note_create.category,
-            tags=note_create.tags or []
+            category=category,
+            tags=tags
         )
         db.add(note)
         db.flush()  # Get the note ID

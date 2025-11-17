@@ -18,12 +18,14 @@ router = APIRouter()
 @router.post("/upload", response_model=dict)
 async def upload_notes(
     files: List[UploadFile] = File(...),
+    auto_classify: bool = Query(False, description="自动分类和提取标签"),
     db: Session = Depends(get_db)
 ):
     """
     Upload one or more note files
 
     - **files**: List of files to upload (markdown, code files, etc.)
+    - **auto_classify**: Enable automatic classification and tag extraction using LLM
     """
     success_count = 0
     failed_count = 0
@@ -69,7 +71,7 @@ async def upload_notes(
                 title=file.filename,
                 file_type=get_file_type(file.filename),
                 content=content_str,
-                category=None,  # TODO: Auto-classify
+                category=None,  # Will be set by auto-classification if enabled
                 tags=[]
             )
 
@@ -77,7 +79,8 @@ async def upload_notes(
                 db=db,
                 note_create=note_create,
                 file_path=file_path,
-                user_id=None  # TODO: Get from auth
+                user_id=None,  # TODO: Get from auth
+                auto_classify=auto_classify
             )
 
             note_ids.append(str(note.id))
@@ -217,3 +220,14 @@ def search_notes(
         }
         for result in results
     ]
+
+
+@router.get("/categories/available", response_model=List[str])
+def get_available_categories():
+    """
+    获取所有可用的笔记分类
+
+    返回预定义的分类列表，用于前端展示和筛选
+    """
+    from ..services.classification_service import classification_service
+    return classification_service.get_available_categories()

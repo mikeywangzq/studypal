@@ -46,11 +46,14 @@
 - ✅ **自动索引**
   上传即自动分块和向量化
 
+- ✅ **🆕 AI 自动分类**
+  使用 LLM 智能推荐笔记分类
+
+- ✅ **🆕 自动标签提取**
+  AI 自动提取技术关键词作为标签
+
 - ✅ **语义搜索**
   使用自然语言查找相关笔记
-
-- ✅ **标签分类**
-  支持多维度分类和标签管理
 
 - ✅ **完整 CRUD**
   增删改查一应俱全
@@ -106,10 +109,12 @@
 | **RAG 检索增强** | 向量搜索 + GPT 大模型，答案准确度高 |
 | **向量数据库** | ChromaDB 实现高效语义相似度搜索 |
 | **大模型集成** | OpenAI GPT-3.5-turbo 提供智能回答 |
+| **🆕 智能分类** | LLM 自动分类笔记并提取技术标签 |
+| **🆕 查询缓存** | LRU/TTL 缓存策略提升响应速度 |
+| **🆕 测试覆盖** | 完整的单元测试确保代码质量 |
 | **一键部署** | Docker Compose 一条命令启动全部服务 |
 | **现代化 UI** | Tailwind CSS 打造精美响应式界面 |
 | **实时更新** | React Query 自动缓存失效和数据同步 |
-| **全文检索** | 向量搜索 + 关键词搜索双重保障 |
 
 </div>
 
@@ -212,20 +217,29 @@ curl -X POST http://localhost:8000/api/notes/upload \
 
 ## 📚 API 文档
 
-### 📝 笔记管理 API（6 个端点）
+### 📝 笔记管理 API（7 个端点）
 
 <details>
-<summary><b>📤 上传笔记</b></summary>
+<summary><b>📤 上传笔记（🆕 支持自动分类）</b></summary>
 
 ```http
-POST /api/notes/upload
+POST /api/notes/upload?auto_classify=true
 Content-Type: multipart/form-data
 
 files: file1.md, file2.py, file3.cpp...
 ```
 
+**查询参数**:
+- `auto_classify` (可选): 是否启用 AI 自动分类和标签提取，默认 false
+
 **支持格式**: `.md` `.txt` `.py` `.cpp` `.c` `.java` `.js` `.ts` `.jsx` `.tsx`
 **大小限制**: 单文件 10MB，总计 100MB
+
+**🆕 自动分类功能**:
+- 启用后，AI 会自动分析笔记内容
+- 推荐最合适的分类（14个预定义分类）
+- 自动提取 3-7 个技术关键词作为标签
+- 返回置信度和分类理由
 
 </details>
 
@@ -292,6 +306,37 @@ DELETE /api/notes/{note_id}
 ```
 
 **注意**: 会同时删除所有相关的笔记块和向量
+
+</details>
+
+<details>
+<summary><b>🆕 📂 获取可用分类列表</b></summary>
+
+```http
+GET /api/notes/categories/available
+```
+
+**返回示例**:
+```json
+[
+  "操作系统",
+  "计算机网络",
+  "数据库",
+  "算法与数据结构",
+  "编程语言",
+  "软件工程",
+  "计算机体系结构",
+  "人工智能",
+  "机器学习",
+  "Web开发",
+  "移动开发",
+  "云计算",
+  "网络安全",
+  "其他"
+]
+```
+
+**用途**: 前端展示分类选项、筛选笔记
 
 </details>
 
@@ -1055,6 +1100,41 @@ curl http://localhost:8000/api/deadlines/statistics
 curl "http://localhost:8000/api/deadlines/upcoming?days=7"
 ```
 
+#### 🆕 测试智能分类功能
+
+```bash
+# 测试 1: 上传笔记并启用自动分类
+curl -X POST "http://localhost:8000/api/notes/upload?auto_classify=true" \
+  -F "files=@test_notes/xv6_page_table.md"
+
+# 测试 2: 获取可用分类列表
+curl http://localhost:8000/api/notes/categories/available
+```
+
+#### 🆕 运行单元测试
+
+```bash
+# 进入后端目录
+cd backend
+
+# 安装测试依赖
+pip install -r requirements.txt
+
+# 运行所有测试
+pytest
+
+# 运行特定测试文件
+pytest tests/test_classification_service.py -v
+
+# 查看测试覆盖率
+pytest --cov=app --cov-report=html
+```
+
+**测试文件**:
+- `tests/test_notes_api.py` - 笔记 API 测试
+- `tests/test_classification_service.py` - 分类服务测试
+- `tests/test_cache_service.py` - 缓存服务测试
+
 ### 📋 完整测试文档
 
 详细测试指南请查看 **[TESTING.md](./TESTING.md)**，包含：
@@ -1201,12 +1281,12 @@ server {
 - [x] 时间可视化指示
 - [x] 响应式 UI
 
-### 🔜 第五阶段：智能增强（规划中）
-- [ ] 使用 LLM 自动分类笔记
-- [ ] 自动提取标签
-- [ ] 查询结果缓存优化
+### ✅ 第五阶段：智能增强（已完成）
+- [x] 使用 LLM 自动分类笔记
+- [x] 自动提取标签
+- [x] 查询结果缓存优化（LRU + TTL）
+- [x] 单元测试和集成测试
 - [ ] 高级数据分析
-- [ ] 单元测试和集成测试
 
 ### 🚀 未来展望
 
@@ -1252,13 +1332,14 @@ server {
 
 | 📈 指标 | 💯 数值 |
 |--------|---------|
-| **代码文件数** | 64+ |
-| **代码行数** | 6,000+ |
-| **API 端点** | 20 |
+| **代码文件数** | 70+ |
+| **代码行数** | 7,500+ |
+| **API 端点** | 21 |
 | **数据库表** | 5 |
 | **React 组件** | 15+ |
-| **开发阶段** | 4 个阶段 |
-| **测试覆盖率** | 敬请期待 |
+| **开发阶段** | 5 个阶段 ✅ |
+| **测试文件** | 3 个测试套件 |
+| **测试用例** | 40+ 个测试 |
 
 </div>
 
