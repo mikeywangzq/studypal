@@ -77,9 +77,9 @@ function HomePage() {
               Keep track of assignments, exams, and project deadlines.
               Get timely reminders so you never miss an important date.
             </p>
-            <button className="text-purple-600 hover:text-purple-800 font-medium">
+            <Link to="/deadlines" className="text-purple-600 hover:text-purple-800 font-medium inline-block">
               View Calendar →
-            </button>
+            </Link>
           </div>
         </div>
 

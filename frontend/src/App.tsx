@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import ChatPage from './pages/ChatPage'
+import DeadlinesPage from './pages/DeadlinesPage'
 
 function App() {
   return (
@@ -9,9 +10,9 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/chat" element={<ChatPage />} />
+          <Route path="/deadlines" element={<DeadlinesPage />} />
           {/* TODO: Add more routes as we build them */}
           {/* <Route path="/notes" element={<NotesPage />} /> */}
-          {/* <Route path="/deadlines" element={<DeadlinesPage />} /> */}
         </Routes>
       </div>
     </Router>

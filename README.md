@@ -340,15 +340,17 @@ VITE_API_BASE_URL=http://localhost:8000
 - Vector database integration
 - Notes API endpoints
 
-### Phase 3 (In Progress)
+### Phase 3 ✅ (Completed)
 - RAG Q&A system
 - Conversation history
-- Chat interface
+- Chat interface with Markdown rendering
+- Source attribution and references
 
-### Phase 4 (Planned)
-- DDL management API
-- Calendar view
-- Reminder system
+### Phase 4 ✅ (Completed)
+- DDL management API (CRUD)
+- Deadline statistics dashboard
+- List view with filters (upcoming, overdue, completed)
+- Priority and status management
 
 ### Phase 5 (Planned)
 - Auto-categorization with LLM
