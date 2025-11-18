@@ -69,9 +69,10 @@ class VersionService:
 
         try:
             # 获取最新版本号（按版本号降序排列，取第一个）
+            # 使用 with_for_update() 加行锁，防止并发创建时版本号重复
             latest_version = db.query(NoteVersion).filter(
                 NoteVersion.note_id == note_id
-            ).order_by(NoteVersion.version_number.desc()).first()
+            ).order_by(NoteVersion.version_number.desc()).with_for_update().first()
 
             # 版本号从1开始递增
             version_number = (latest_version.version_number + 1) if latest_version else 1
@@ -93,6 +94,16 @@ class VersionService:
             db.refresh(version)
 
             logger.info(f"成功创建版本快照: note_id={note_id}, version={version_number}")
+
+            # 自动清理旧版本（保留最新50个版本，防止版本历史无限增长）
+            try:
+                deleted_count = VersionService.delete_old_versions(db, note_id, keep_count=50)
+                if deleted_count > 0:
+                    logger.info(f"自动清理旧版本: note_id={note_id}, deleted={deleted_count}")
+            except Exception as e:
+                # 清理失败不影响主流程
+                logger.warning(f"自动清理旧版本失败: {e}")
+
             return version
 
         except Exception as e:

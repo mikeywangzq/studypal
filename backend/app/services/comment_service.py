@@ -83,7 +83,20 @@ class CommentService:
             mentions_json = None
             if comment_create.mentions:
                 try:
-                    mentions_json = json.dumps([str(uid) for uid in comment_create.mentions], ensure_ascii=False)
+                    # 验证mentions中的用户ID是否存在（过滤掉不存在的用户）
+                    valid_mentions = []
+                    for uid in comment_create.mentions:
+                        user_exists = db.query(User).filter(User.id == uid).first() is not None
+                        if user_exists:
+                            valid_mentions.append(str(uid))
+                        else:
+                            logger.warning(f"提及的用户不存在，已过滤: user_id={uid}")
+
+                    # 只保存有效的用户ID
+                    if valid_mentions:
+                        mentions_json = json.dumps(valid_mentions, ensure_ascii=False)
+                    else:
+                        mentions_json = None
                 except Exception as e:
                     logger.error(f"序列化mentions失败: {e}")
                     # 继续创建评论，但不保存mentions

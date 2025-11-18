@@ -59,6 +59,7 @@ class NotificationService:
         注意：
         - 新创建的通知默认is_read=False（未读）
         - read_at初始为NULL
+        - 自动去重：如果已存在相同的未读通知，不创建新通知
 
         Args:
             db: 数据库会话
@@ -68,6 +69,20 @@ class NotificationService:
             创建的通知对象，失败则返回None
         """
         try:
+            # 去重检查：检查是否已存在相同的未读通知
+            # 相同通知定义：相同用户、相同类型、相同资源、相同actor
+            existing = db.query(Notification).filter(
+                Notification.user_id == notification_create.user_id,
+                Notification.type == notification_create.type,
+                Notification.resource_id == notification_create.resource_id,
+                Notification.actor_id == notification_create.actor_id,
+                Notification.is_read == False  # 只检查未读通知
+            ).first()
+
+            if existing:
+                logger.info(f"通知已存在，跳过创建: type={notification_create.type}, user_id={notification_create.user_id}, resource_id={notification_create.resource_id}")
+                return existing  # 返回已存在的通知
+
             notification = Notification(
                 user_id=notification_create.user_id,
                 type=notification_create.type,
