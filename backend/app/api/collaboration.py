@@ -273,6 +273,13 @@ async def get_note_comments(
     for comment in comments:
         user = db.query(User).filter(User.id == comment.user_id).first()
 
+        # 安全地解析mentions JSON
+        try:
+            mentions_list = json.loads(comment.mentions) if comment.mentions else []
+        except json.JSONDecodeError as e:
+            logger.error(f"解析评论mentions失败: comment_id={comment.id}, error={e}")
+            mentions_list = []
+
         comment_data = CommentWithUser(
             id=comment.id,
             note_id=comment.note_id,
@@ -281,7 +288,7 @@ async def get_note_comments(
             avatar_url=user.avatar_url if user else None,
             content=comment.content,
             parent_id=comment.parent_id,
-            mentions=json.loads(comment.mentions) if comment.mentions else [],
+            mentions=mentions_list,
             is_edited=comment.is_edited,
             created_at=comment.created_at,
             updated_at=comment.updated_at,
@@ -292,6 +299,14 @@ async def get_note_comments(
         replies = comment_service.get_comment_replies(db, comment.id)
         for reply in replies:
             reply_user = db.query(User).filter(User.id == reply.user_id).first()
+
+            # 安全地解析回复的mentions JSON
+            try:
+                reply_mentions = json.loads(reply.mentions) if reply.mentions else []
+            except json.JSONDecodeError as e:
+                logger.error(f"解析回复mentions失败: reply_id={reply.id}, error={e}")
+                reply_mentions = []
+
             comment_data.replies.append(CommentWithUser(
                 id=reply.id,
                 note_id=reply.note_id,
@@ -300,7 +315,7 @@ async def get_note_comments(
                 avatar_url=reply_user.avatar_url if reply_user else None,
                 content=reply.content,
                 parent_id=reply.parent_id,
-                mentions=json.loads(reply.mentions) if reply.mentions else [],
+                mentions=reply_mentions,
                 is_edited=reply.is_edited,
                 created_at=reply.created_at,
                 updated_at=reply.updated_at,
@@ -504,7 +519,8 @@ async def websocket_endpoint(
         user_id = UUID(payload.get("sub"))
         username = payload.get("username", "Unknown")
     except Exception as e:
-        logger.error(f"WebSocket认证失败: {e}")
+        # 注意：不要记录token本身，避免敏感信息泄露
+        logger.warning(f"WebSocket认证失败: note_id={note_id}, reason=invalid_token")
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
         return
 

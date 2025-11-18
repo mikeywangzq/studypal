@@ -2,7 +2,15 @@
 
 > 🎓 专为计算机系学生打造的智能学习伙伴，让学习更高效、更智能！
 >
-> **笔记管理** · **AI 问答** · **DDL 追踪** · 三位一体的学习解决方案
+> **笔记管理** · **AI 问答** · **DDL 追踪** · **实时协作** · 四位一体的学习解决方案
+
+> **🎉 Phase 9 重大更新**: 实时协作与版本控制系统已完成！
+> - ✨ WebSocket 实时协作编辑
+> - 📜 完整的版本控制系统
+> - 💬 评论和讨论功能
+> - 🔔 智能通知系统
+>
+> 查看详情: [Phase 9 文档](docs/PHASE9_COLLABORATION.md) | [API 参考](docs/API_REFERENCE.md)
 
 <div align="center">
 
@@ -21,6 +29,7 @@
 - [🛠️ 技术栈](#️-技术栈)
 - [🚀 快速开始](#-快速开始)
 - [📚 API 文档](#-api-文档)
+- [📖 详细文档](#-详细文档)
 - [💡 使用指南](#-使用指南)
 - [🏗️ 系统架构](#️-系统架构)
 - [🗄️ 数据库设计](#️-数据库设计)
@@ -1271,6 +1280,89 @@ Authorization: Bearer <access_token>
 ---
 
 **📖 完整交互式 API 文档**: http://localhost:8000/docs
+
+---
+
+## 📖 详细文档
+
+### Phase 9 - 实时协作与版本控制
+
+Phase 9 为 StudyPal 带来了完整的协作系统，包括：
+
+- **📜 版本控制系统** - 快照机制，支持版本对比和一键回滚
+- **💬 评论与讨论** - 两层评论结构，支持 @提及
+- **🔔 智能通知系统** - 分享、评论、提及、权限变更四种通知类型
+- **⚡ WebSocket 实时协作** - 多用户实时编辑，光标同步，在线状态
+
+#### 📚 文档索引
+
+| 文档 | 说明 |
+|------|------|
+| [Phase 9 完整文档](docs/PHASE9_COLLABORATION.md) | 功能详解、技术实现、安全设计、性能优化 |
+| [API 快速参考](docs/API_REFERENCE.md) | 17个协作API端点速查表 |
+| [Bug 报告](docs/BUG_REPORT.md) | 已发现的bug、修复记录、测试建议 |
+
+#### 🔑 核心特性
+
+**版本控制**
+```bash
+# 查看版本历史
+GET /api/notes/{note_id}/versions
+
+# 创建版本快照
+POST /api/notes/{note_id}/versions
+
+# 恢复到指定版本
+POST /api/notes/{note_id}/restore/{version_id}
+
+# 对比两个版本
+GET /api/versions/compare?version_id1={id1}&version_id2={id2}
+```
+
+**实时协作 (WebSocket)**
+```javascript
+const token = localStorage.getItem('jwt_token');
+const ws = new WebSocket(
+  `ws://localhost:8000/api/ws/notes/${noteId}?token=${token}`
+);
+
+// 发送光标位置
+ws.send(JSON.stringify({
+  type: 'cursor_update',
+  position: { line: 10, column: 5 }
+}));
+
+// 接收实时更新
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  // 处理 cursor_update, edit, user_joined, user_left 等事件
+};
+```
+
+**评论系统**
+```bash
+# 创建评论（支持@提及）
+POST /api/notes/{note_id}/comments
+{
+  "content": "这个实现很棒！",
+  "mentions": ["user-uuid-1", "user-uuid-2"]
+}
+
+# 获取评论树
+GET /api/notes/{note_id}/comments
+```
+
+**通知系统**
+```bash
+# 获取未读通知
+GET /api/notifications?unread_only=true
+
+# 标记全部已读
+POST /api/notifications/read-all
+
+# 获取通知统计
+GET /api/notifications/stats
+```
 
 ---
 
